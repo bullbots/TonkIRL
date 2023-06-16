@@ -4,38 +4,30 @@
 
 package frc.robot;
 
-// import com.revrobotics.CANSparkMax;
-// import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.SerialPort.Port;
-import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.util.DriverStationSpoofer;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
 
-  // private CANSparkMax spark = new CANSparkMax(8, MotorType.kBrushless);
-
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
 
     // Enable the robot on startup.
-    if (isSimulation()) {
-      DriverStationSim.setEnabled(true);
-    } else {
-      // DriverStationSpoofer.enable();
-    }
+    // if (isSimulation()) {
+    //   DriverStationSim.setEnabled(true);
+    // } else {
+    //   DriverStationSpoofer.enable();
+    // }
 
-    SmartDashboard.putString("spoofer", "empty");
+    SmartDashboard.putString("serial", "empty");
   }
 
   SerialPort port = new SerialPort(9600, Port.kUSB1);
@@ -48,7 +40,7 @@ public class Robot extends TimedRobot {
       System.out.println(port.readString());
       String newString = port.readString();
       if (!newString.equals("")) {
-        SmartDashboard.putString("spoofer", newString);
+        SmartDashboard.putString("serial", newString);
       }
     } catch (Exception e) {}
 
