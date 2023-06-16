@@ -14,6 +14,7 @@ import frc.robot.util.DriverStationSpoofer;
 public class RobotContainer {
 
   private final DigitalInput spoofSwitch = new DigitalInput(0);
+  
   private final Trigger spoofSwitchTrigger = new Trigger(() -> {
     return spoofSwitch.get();
   });

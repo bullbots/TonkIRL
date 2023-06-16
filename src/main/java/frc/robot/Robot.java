@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.util.PWMReader;
+import frc.robot.util.SerialReader;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
@@ -28,23 +30,19 @@ public class Robot extends TimedRobot {
     // }
 
     SmartDashboard.putString("serial", "empty");
+
+    // Start outputting PWM signals through LazyDashboard
+    PWMReader.startReading();
   }
 
-  SerialPort port = new SerialPort(9600, Port.kUSB1);
+  private final SerialPort port = new SerialPort(9600, Port.kUSB1);
+  private final SerialReader reader = new SerialReader(port);
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
 
-    try {
-      System.out.println(port.readString());
-      String newString = port.readString();
-      if (!newString.equals("")) {
-        SmartDashboard.putString("serial", newString);
-      }
-    } catch (Exception e) {}
-
-    // System.out.println(DriverStation.isEnabled());
+    reader.read();
   }
 
   @Override
