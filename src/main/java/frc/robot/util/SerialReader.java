@@ -9,19 +9,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SerialReader {
   private final SerialPort serialPort;
-  private final char startChar = '{', endChar = '}';
   private final StringBuilder message = new StringBuilder();
   public SerialReader(SerialPort port) {
     serialPort = port;
-
-    SmartDashboard.putString("serial", "none");
-    SmartDashboard.putString("last_serial", "none");
   }
 
   public String read() {
     return read(false);
   }
 
+  /**
+   * Reads from the {@link SerialPort} and returns all full messages that start with { and end with }.
+   */
   public String read(boolean all) {
     String newString = serialPort.readString();
     // try {
@@ -34,15 +33,18 @@ public class SerialReader {
       //   } catch (Exception e) {}
       
     String ret = "{}";
-    System.out.println(newString);
+    if (!newString.equals("")) {
+      SmartDashboard.putString("Hi", newString);
+      // System.out.println(newString);
+    }
     for (int i = 0; i < newString.length(); i++) {
       // System.out.println(i);
       final char currentChar = newString.charAt(i);
-      if (currentChar == startChar) {
+      if (currentChar == '{') {
         message.delete(0, message.length());
         newString = newString.substring(i);
         i = 0;
-      } else if (currentChar == endChar) {
+      } else if (currentChar == '}') {
         message.append(newString.substring(0, i+1));
         newString = newString.substring(i);
         i = 0;
@@ -54,6 +56,8 @@ public class SerialReader {
       }
     }
     message.append(newString);
+    SmartDashboard.putString("Thing", ret);
+    // System.out.println(ret);
     return ret.substring(1, ret.length()-1);
   }
 }

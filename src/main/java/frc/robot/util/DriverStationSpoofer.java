@@ -19,6 +19,8 @@ public class DriverStationSpoofer {
 
     private static Thread thread;
 
+    private static boolean isSpoofing = false;
+
     private static void generateEnabledDsPacket(byte[] data, short sendCount) {
         data[0] = (byte) (sendCount >> 8);
         data[1] = (byte) sendCount;
@@ -75,6 +77,7 @@ public class DriverStationSpoofer {
         // So it must be a daemon thread
         thread.setDaemon(true);
         thread.start();
+        isSpoofing = true;
     }
 
     /**
@@ -90,5 +93,10 @@ public class DriverStationSpoofer {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        isSpoofing = false;
+    }
+
+    public static boolean isEnabled() {
+        return isSpoofing;
     }
 }

@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.SerialPort.Port;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class RadioController {
     private final AtomicInteger x = new AtomicInteger(0), y = new AtomicInteger(0);
@@ -16,9 +17,14 @@ public class RadioController {
         final SerialPort port = new SerialPort(9600, Port.kUSB1);
         final SerialReader reader = new SerialReader(port);
         while (!Thread.currentThread().isInterrupted()) {
-            String[] values = reader.read().split(",");
+            final String read = reader.read();
+            SmartDashboard.putString("AGH", read);
+            String[] values = read.split(",");
+            SmartDashboard.putString("values[0]", values[0]);
             if (values.length == 1) {
-                // DriverStationSpoofer.disable();
+                if (DriverStationSpoofer.isEnabled()) {
+                    DriverStationSpoofer.disable();
+                }
                 
                 x.set(0);
                 y.set(0);
@@ -32,6 +38,7 @@ public class RadioController {
     });
 
     public RadioController() {
+        thread.setDaemon(true);
         thread.start();
     }
 
