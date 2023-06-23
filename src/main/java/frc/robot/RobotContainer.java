@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.util.DriverStationSpoofer;
+import frc.robot.util.RadioController;
+import frc.team1891.common.LazyDashboard;
 
 public class RobotContainer {
 
@@ -19,8 +21,13 @@ public class RobotContainer {
     return spoofSwitch.get();
   });
 
+  RadioController controller = new RadioController();
+
   public RobotContainer() {
     configureBindings();
+
+    LazyDashboard.addNumber("controllerX", controller::getX);
+    LazyDashboard.addNumber("controllerY", controller::getY);
   }
 
   private void configureBindings() {

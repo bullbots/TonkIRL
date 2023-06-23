@@ -10,5 +10,106 @@
         "open": true
       }
     }
+  },
+  "Plot": {
+    "Plot <0>": {
+      "plots": [
+        {
+          "height": 678,
+          "series": [
+            {
+              "color": [
+                1.0,
+                0.0,
+                0.0,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/PWM port: 10"
+            },
+            {
+              "color": [
+                1.0,
+                0.48101264238357544,
+                0.0,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/PWM port: 11"
+            },
+            {
+              "color": [
+                1.0,
+                0.8639106750488281,
+                0.17299580574035645,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/PWM port: 12"
+            },
+            {
+              "color": [
+                0.7341772317886353,
+                1.0,
+                0.0,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/PWM port: 13"
+            },
+            {
+              "color": [
+                0.0,
+                1.0,
+                0.0,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/PWM port: 14"
+            },
+            {
+              "color": [
+                0.0,
+                1.0,
+                0.7594935894012451,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/PWM port: 15"
+            },
+            {
+              "color": [
+                0.0,
+                0.7594938278198242,
+                1.0,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/PWM port: 16"
+            },
+            {
+              "color": [
+                0.0,
+                0.12658238410949707,
+                1.0,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/PWM port: 17"
+            },
+            {
+              "color": [
+                0.5822782516479492,
+                0.0,
+                1.0,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/PWM port: 18"
+            },
+            {
+              "color": [
+                0.8607592582702637,
+                0.0,
+                1.0,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/PWM port: 19"
+            }
+          ]
+        }
+      ]
+    }
   }
 }
