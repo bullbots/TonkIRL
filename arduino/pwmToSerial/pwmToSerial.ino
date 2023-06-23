@@ -1,4 +1,4 @@
-
+ 
 const int pwmPins[] = {9,11}; //pins in order of
 const int numPwmPins = 2;
 
@@ -13,15 +13,18 @@ void setup() {
 }
 
 void loop() {
-  currentBus = "";
+  currentBus = "{";
   for(int i = 0;i < numPwmPins;i++){
     pwmVal[i] = map(pulseIn(pwmPins[i], HIGH),987,1987,-100,100);
-    if(pwmVal[i] < 900 || pwmVal > 2000){
+    if(false){//pwmVal[i] < 900 || pwmVal > 2000
       Estoped = true;
-      currentBus = "{controller fault}";
+      currentBus = "controller fault";
       break;
     }else{
-      currentBus += "," + pwmVal[i];
+      if(i != 0){
+        currentBus += ",";
+      }
+      currentBus += (String)pwmVal[i];
     }
   }
   currentBus += "}";

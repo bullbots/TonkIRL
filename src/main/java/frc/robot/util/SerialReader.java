@@ -34,7 +34,9 @@ public class SerialReader {
       //   } catch (Exception e) {}
       
     String ret = "{}";
+    System.out.println(newString);
     for (int i = 0; i < newString.length(); i++) {
+      // System.out.println(i);
       final char currentChar = newString.charAt(i);
       if (currentChar == startChar) {
         message.delete(0, message.length());
