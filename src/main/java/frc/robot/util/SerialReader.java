@@ -34,8 +34,8 @@ public class SerialReader {
       
     String ret = "{}";
     if (!newString.equals("")) {
-      SmartDashboard.putString("Hi", newString);
-      // System.out.println(newString);
+      SmartDashboard.putString("newString", newString);
+      System.out.println(newString);
     }
     for (int i = 0; i < newString.length(); i++) {
       // System.out.println(i);
@@ -56,7 +56,11 @@ public class SerialReader {
       }
     }
     message.append(newString);
-    SmartDashboard.putString("Thing", ret);
+    SmartDashboard.putString("ret (with brackets)", ret);
+    SmartDashboard.putString("message", message.toString());
+    if (!ret.equals("{}")) {
+      SmartDashboard.putString("ret dljsfa", ret);
+    }
     // System.out.println(ret);
     return ret.substring(1, ret.length()-1);
   }

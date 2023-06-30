@@ -18,7 +18,7 @@ public class RadioController {
         final SerialReader reader = new SerialReader(port);
         while (!Thread.currentThread().isInterrupted()) {
             final String read = reader.read();
-            SmartDashboard.putString("AGH", read);
+            SmartDashboard.putString("reader.read()", read);
             String[] values = read.split(",");
             SmartDashboard.putString("values[0]", values[0]);
             if (values.length == 1) {

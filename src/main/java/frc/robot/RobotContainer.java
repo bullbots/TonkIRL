@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -17,17 +18,28 @@ public class RobotContainer {
 
   private final DigitalInput spoofSwitch = new DigitalInput(0);
   
-  private final Trigger spoofSwitchTrigger = new Trigger(() -> {
-    return spoofSwitch.get();
-  });
+  private final Trigger spoofSwitchTrigger = new Trigger(() -> !spoofSwitch.get());
 
-  RadioController controller = new RadioController();
+  private final RadioController controller = new RadioController();
 
   public RobotContainer() {
     configureBindings();
 
+    // for (int i = 1; i < 10; i++) {
+    //   DigitalInput dio = new DigitalInput(i);
+    //   LazyDashboard.addBoolean(""+i, dio::get);
+    // }
+
     LazyDashboard.addNumber("controllerX", controller::getX);
     LazyDashboard.addNumber("controllerY", controller::getY);
+
+    LazyDashboard.addBoolean("enableSwitch", spoofSwitchTrigger::getAsBoolean);
+    LazyDashboard.addBoolean("isSpoofing", DriverStationSpoofer::isEnabled);
+
+    SmartDashboard.putNumber("ping", 0);
+    LazyDashboard.addNumber("ping", () -> {
+      return SmartDashboard.getNumber("ping", 0) + 1;
+    });
   }
 
   private void configureBindings() {
