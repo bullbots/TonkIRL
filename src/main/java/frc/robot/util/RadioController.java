@@ -16,22 +16,37 @@ public class RadioController {
     private final Thread thread = new Thread(() -> {
         final SerialPort port = new SerialPort(9600, Port.kUSB1);
         final SerialReader reader = new SerialReader(port);
+
+        int disconnectedCounter = 0;
+        // long time = 0;
         while (!Thread.currentThread().isInterrupted()) {
+            // time = System.currentTimeMillis();
             final String read = reader.read();
-            SmartDashboard.putString("reader.read()", read);
+            // SmartDashboard.putString("reader.read()", read);
             String[] values = read.split(",");
-            SmartDashboard.putString("values[0]", values[0]);
+            // SmartDashboard.putString("values[0]", values[0]);
+            // SmartDashboard.putNumber("agh", disconnectedCounter);
             if (values.length == 1) {
-                if (DriverStationSpoofer.isEnabled()) {
-                    DriverStationSpoofer.disable();
+                disconnectedCounter++;
+                if (disconnectedCounter > 5) {
+                    if (DriverStationSpoofer.isEnabled()) {
+                        DriverStationSpoofer.disable();
+                    }
+                    x.set(0);
+                    y.set(0);
+                    SmartDashboard.putBoolean("controller disconnected", true);
                 }
-                
-                x.set(0);
-                y.set(0);
             } else {
+                disconnectedCounter = 0;
                 x.set(Integer.parseInt(values[0]));
                 y.set(Integer.parseInt(values[1]));
+                SmartDashboard.putBoolean("controller disconnected", false);
             }
+            // SmartDashboard.putNumber("threadTime", (System.currentTimeMillis() - time));
+            // System.out.println((System.currentTimeMillis() - time));
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {}
         }
 
         port.close();

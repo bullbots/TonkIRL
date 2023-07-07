@@ -5,8 +5,11 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.simulation.DriverStationSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.util.DriverStationSpoofer;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
@@ -18,11 +21,11 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
 
     // Enable the robot on startup.
-    // if (isSimulation()) {
-    //   DriverStationSim.setEnabled(true);
-    // } else {
-    //   DriverStationSpoofer.enable();
-    // }
+    if (isSimulation()) {
+      DriverStationSim.setEnabled(true);
+    } else {
+      DriverStationSpoofer.enable();
+    }
   }
 
   @Override

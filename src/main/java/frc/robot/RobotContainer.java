@@ -30,8 +30,8 @@ public class RobotContainer {
     //   LazyDashboard.addBoolean(""+i, dio::get);
     // }
 
-    LazyDashboard.addNumber("controllerX", controller::getX);
-    LazyDashboard.addNumber("controllerY", controller::getY);
+    LazyDashboard.addNumber("controllerX", 1, controller::getX);
+    LazyDashboard.addNumber("controllerY", 1, controller::getY);
 
     LazyDashboard.addBoolean("enableSwitch", spoofSwitchTrigger::getAsBoolean);
     LazyDashboard.addBoolean("isSpoofing", DriverStationSpoofer::isEnabled);

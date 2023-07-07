@@ -4,8 +4,8 @@
 
 package frc.robot.util;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SerialPort;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SerialReader {
   private final SerialPort serialPort;
@@ -22,8 +22,9 @@ public class SerialReader {
    * Reads from the {@link SerialPort} and returns all full messages that start with { and end with }.
    */
   public String read(boolean all) {
-    String newString = serialPort.readString();
-    // try {
+    try {
+      String newString = serialPort.readString();
+          // try {
       //     // System.out.println(serialPort.readString());
       //     String newString = serialPort.readString();
       //     if (!newString.equals("")) {
@@ -32,36 +33,43 @@ public class SerialReader {
       //     SmartDashboard.putString("serial", newString);
       //   } catch (Exception e) {}
       
-    String ret = "{}";
-    if (!newString.equals("")) {
-      SmartDashboard.putString("newString", newString);
-      System.out.println(newString);
-    }
-    for (int i = 0; i < newString.length(); i++) {
-      // System.out.println(i);
-      final char currentChar = newString.charAt(i);
-      if (currentChar == '{') {
-        message.delete(0, message.length());
-        newString = newString.substring(i);
-        i = 0;
-      } else if (currentChar == '}') {
-        message.append(newString.substring(0, i+1));
-        newString = newString.substring(i);
-        i = 0;
-        if (all && ret != null) {
-          ret += message.toString();
-        } else {
-          ret = message.toString();
+      String ret = "{}";
+      if (!newString.equals("")) {
+        // SmartDashboard.putString("newString", newString);
+        // System.out.println(newString);
+      }
+      for (int i = 0; i < newString.length(); i++) {
+        // System.out.println(i);
+        final char currentChar = newString.charAt(i);
+        if (currentChar == '{') {
+          message.delete(0, message.length());
+          newString = newString.substring(i);
+          i = 0;
+        } else if (currentChar == '}') {
+          message.append(newString.substring(0, i+1));
+          newString = newString.substring(i);
+          i = 0;
+          if (all && ret != null) {
+            ret += message.toString();
+          } else {
+            ret = message.toString();
+          }
         }
       }
+      message.append(newString);
+      // SmartDashboard.putString("ret (with brackets)", ret);
+      // SmartDashboard.putString("message", message.toString());
+      if (!ret.equals("{}")) {
+        // SmartDashboard.putString("ret dljsfa", ret);
+        return ret.substring(1, ret.length()-1);
+      } else {
+        return "";
+      }
+      // System.out.println(ret);
+      
+    } catch (Exception e) {
+      DriverStation.reportWarning("USB to Arduino is most likely disconnected", false);
+      return "ERROR";
     }
-    message.append(newString);
-    SmartDashboard.putString("ret (with brackets)", ret);
-    SmartDashboard.putString("message", message.toString());
-    if (!ret.equals("{}")) {
-      SmartDashboard.putString("ret dljsfa", ret);
-    }
-    // System.out.println(ret);
-    return ret.substring(1, ret.length()-1);
   }
 }
