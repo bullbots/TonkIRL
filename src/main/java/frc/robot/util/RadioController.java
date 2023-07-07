@@ -13,25 +13,21 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class RadioController {
     private final AtomicInteger x = new AtomicInteger(0), y = new AtomicInteger(0);
 
-    private final Thread thread = new Thread(() -> {
+    private final Thread serialReaderThread = new Thread(() -> {
         final SerialPort port = new SerialPort(9600, Port.kUSB1);
         final SerialReader reader = new SerialReader(port);
 
         int disconnectedCounter = 0;
-        // long time = 0;
         while (!Thread.currentThread().isInterrupted()) {
-            // time = System.currentTimeMillis();
             final String read = reader.read();
-            // SmartDashboard.putString("reader.read()", read);
             String[] values = read.split(",");
-            // SmartDashboard.putString("values[0]", values[0]);
-            // SmartDashboard.putNumber("agh", disconnectedCounter);
             if (values.length == 1) {
                 disconnectedCounter++;
                 if (disconnectedCounter > 5) {
-                    if (DriverStationSpoofer.isEnabled()) {
-                        DriverStationSpoofer.disable();
-                    }
+                    // TODO: Safety Check
+                    // if (DriverStationSpoofer.isEnabled()) {
+                    //     DriverStationSpoofer.disable();
+                    // }
                     x.set(0);
                     y.set(0);
                     SmartDashboard.putBoolean("controller disconnected", true);
@@ -42,19 +38,23 @@ public class RadioController {
                 y.set(Integer.parseInt(values[1]));
                 SmartDashboard.putBoolean("controller disconnected", false);
             }
-            // SmartDashboard.putNumber("threadTime", (System.currentTimeMillis() - time));
-            // System.out.println((System.currentTimeMillis() - time));
+            // sleep the thread because otherwise the while loop will run faster than the serial buffer can keep up with
+            // this delay makes it more likely to read a complete message each loop and not report the controller as disconnected
             try {
                 Thread.sleep(10);
-            } catch (InterruptedException e) {}
+            } catch (InterruptedException e) {
+                if (DriverStationSpoofer.isEnabled()) {
+                    DriverStationSpoofer.disable();
+                }
+            }
         }
 
         port.close();
     });
 
     public RadioController() {
-        thread.setDaemon(true);
-        thread.start();
+        serialReaderThread.setDaemon(true);
+        serialReaderThread.start();
     }
 
 

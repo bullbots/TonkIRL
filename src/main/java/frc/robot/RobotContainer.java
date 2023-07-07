@@ -10,17 +10,27 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.cannon.AirTankDefaultCommand;
+import frc.robot.commands.drivetrain.ControllerBasicDrive;
+import frc.robot.subsystems.AirTank;
+import frc.robot.subsystems.Cannon;
+import frc.robot.subsystems.Drivetrain;
 import frc.robot.util.DriverStationSpoofer;
 import frc.robot.util.RadioController;
 import frc.team1891.common.LazyDashboard;
 
 public class RobotContainer {
+  // Subsystems
+  private final Drivetrain drivetrain = Drivetrain.getInstance();
+  private final AirTank airTank = AirTank.getInstance();
+  private final Cannon cannon = Cannon.getInstance();
 
+  // Inputs
+  private final RadioController controller = new RadioController();
   private final DigitalInput spoofSwitch = new DigitalInput(0);
   
+  // Triggers
   private final Trigger spoofSwitchTrigger = new Trigger(() -> !spoofSwitch.get());
-
-  private final RadioController controller = new RadioController();
 
   public RobotContainer() {
     configureBindings();
@@ -30,19 +40,23 @@ public class RobotContainer {
     //   LazyDashboard.addBoolean(""+i, dio::get);
     // }
 
-    LazyDashboard.addNumber("controllerX", 1, controller::getX);
-    LazyDashboard.addNumber("controllerY", 1, controller::getY);
 
-    LazyDashboard.addBoolean("enableSwitch", spoofSwitchTrigger::getAsBoolean);
-    LazyDashboard.addBoolean("isSpoofing", DriverStationSpoofer::isEnabled);
+    LazyDashboard.addBoolean("DriverStationSpoofer/enableSwitch", spoofSwitchTrigger::getAsBoolean);
+    LazyDashboard.addBoolean("DriverStationSpoofer/isSpoofing", DriverStationSpoofer::isEnabled);
 
-    SmartDashboard.putNumber("ping", 0);
-    LazyDashboard.addNumber("ping", () -> {
-      return SmartDashboard.getNumber("ping", 0) + 1;
-    });
+    // SmartDashboard.putNumber("ping", 0);
+    // LazyDashboard.addNumber("ping", () -> {
+    //   return SmartDashboard.getNumber("ping", 0) + 1;
+    // });
+    
+    LazyDashboard.addNumber("RadioController/controllerX", 1, controller::getX);
+    LazyDashboard.addNumber("RadioController/controllerY", 1, controller::getY);
   }
 
   private void configureBindings() {
+    drivetrain.setDefaultCommand(new ControllerBasicDrive(drivetrain, controller::getX, controller::getY));
+    airTank.setDefaultCommand(new AirTankDefaultCommand(airTank));
+
     spoofSwitchTrigger.onTrue(new InstantCommand(() -> {
       DriverStationSpoofer.enable();
     }));

@@ -1,0 +1,21 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
+package frc.robot.commands.cannon;
+
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.subsystems.Cannon;
+import frc.robot.subsystems.Cannon.Barrel;
+
+public class FireBarrel extends InstantCommand {
+  public static final double PULSE_DURATION = .4;
+
+  public FireBarrel(Cannon cannon, Barrel barrel) {
+    super(() -> cannon.fire(barrel));
+
+    addRequirements(cannon);
+
+    cannon.setPulseDuration(PULSE_DURATION);
+  }
+}

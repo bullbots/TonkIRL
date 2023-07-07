@@ -10,8 +10,6 @@ import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 public class DriverStationSpoofer {
     static {
         System.out.println("WARNING: DriverStationSpoofer is not FRC legal.  Do not use in a match, and use with caution.");
