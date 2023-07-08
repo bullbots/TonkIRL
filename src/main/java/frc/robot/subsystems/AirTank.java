@@ -37,6 +37,10 @@ public class AirTank extends SubsystemBase {
     SmartDashboard.putNumber("AirTank/Desired Pressure", pressure);
   }
 
+  public double getDesiredPressure() {
+    return SmartDashboard.getNumber("AirTank/Desired Pressure", -1);
+  }
+
   public double getPressure() {
     return pressureSensor.getPressure();
   }
