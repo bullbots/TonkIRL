@@ -5,7 +5,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -15,6 +14,7 @@ import frc.robot.commands.drivetrain.ControllerBasicDrive;
 import frc.robot.subsystems.AirTank;
 import frc.robot.subsystems.Cannon;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.LEDs;
 import frc.robot.util.DriverStationSpoofer;
 import frc.robot.util.RadioController;
 import frc.team1891.common.LazyDashboard;
@@ -24,6 +24,7 @@ public class RobotContainer {
   private final Drivetrain drivetrain = Drivetrain.getInstance();
   private final AirTank airTank = AirTank.getInstance();
   private final Cannon cannon = Cannon.getInstance();
+  private final LEDs leds = LEDs.getInstance();
 
   // Inputs
   private final RadioController controller = new RadioController();
