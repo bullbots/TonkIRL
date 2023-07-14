@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.cannon.AirTankDefaultCommand;
 import frc.robot.commands.drivetrain.ControllerBasicDrive;
@@ -21,24 +22,24 @@ import frc.team1891.common.LazyDashboard;
 
 public class RobotContainer {
   // Subsystems
-  private final Drivetrain drivetrain = Drivetrain.getInstance();
-  private final AirTank airTank = AirTank.getInstance();
-  private final Cannon cannon = Cannon.getInstance();
-  private final LEDs leds = LEDs.getInstance();
+  private static final Drivetrain drivetrain = Drivetrain.getInstance();
+  private static final AirTank airTank = AirTank.getInstance();
+  private static final Cannon cannon = Cannon.getInstance();
+  private static final LEDs leds = LEDs.getInstance();
 
   // Inputs
-  private final RadioController controller = new RadioController();
-  private final DigitalInput spoofSwitch = new DigitalInput(0);
+  private static final RadioController controller = new RadioController();
+  private static final DigitalInput spoofSwitch = new DigitalInput(0);
   
   // Triggers
-  private final Trigger spoofSwitchTrigger = new Trigger(() -> !spoofSwitch.get());
+  private static final Trigger spoofSwitchTrigger = new Trigger(() -> !spoofSwitch.get());
 
   public RobotContainer() {
     configureBindings();
 
     // for (int i = 1; i < 10; i++) {
     //   DigitalInput dio = new DigitalInput(i);
-    //   LazyDashboard.addBoolean(""+i, dio::get);
+    //   LazyDashboard.addBoolean("DIO "+i, dio::get);
     // }
 
 
@@ -58,16 +59,50 @@ public class RobotContainer {
     drivetrain.setDefaultCommand(new ControllerBasicDrive(drivetrain, controller::getX, controller::getY));
     airTank.setDefaultCommand(new AirTankDefaultCommand(airTank));
 
-    spoofSwitchTrigger.onTrue(new InstantCommand(() -> {
+    spoofSwitchTrigger.onTrue(new BetterInstantCommand(() -> {
       DriverStationSpoofer.enable();
     }));
 
-    spoofSwitchTrigger.onFalse(new InstantCommand(() -> {
+    spoofSwitchTrigger.onFalse(new BetterInstantCommand(() -> {
       DriverStationSpoofer.disable();
     }));
   }
 
+  public static boolean spoofSwitchEnabled() {
+    return spoofSwitchTrigger.getAsBoolean();
+  }
+
+  public static boolean radioControllerConnected() {
+    return controller.isConnected();
+  }
+
   public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");
+  }
+
+  @SuppressWarnings("unused")
+  private class BetterInstantCommand extends InstantCommand {
+    /**
+     * Creates a new InstantCommand that runs the given Runnable with the given requirements.
+     *
+     * @param toRun the Runnable to run
+     * @param requirements the subsystems required by this command
+     */
+    public BetterInstantCommand(Runnable toRun, Subsystem... requirements) {
+      super(toRun, requirements);
+    }
+
+    /**
+     * Creates a new InstantCommand with a Runnable that does nothing. Useful only as a no-arg
+     * constructor to call implicitly from subclass constructors.
+     */
+    public BetterInstantCommand() {
+      this(() -> {});
+    }
+
+    @Override
+    public boolean runsWhenDisabled() {
+        return true;
+    }
   }
 }

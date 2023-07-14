@@ -4,6 +4,7 @@
 
 package frc.robot.util;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import edu.wpi.first.wpilibj.SerialPort;
@@ -12,6 +13,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class RadioController {
     private final AtomicInteger x = new AtomicInteger(0), y = new AtomicInteger(0);
+
+    private final AtomicBoolean isConnected = new AtomicBoolean(false);
 
     private final Thread serialReaderThread = new Thread(() -> {
         final SerialPort port = new SerialPort(9600, Port.kUSB1);
@@ -31,12 +34,14 @@ public class RadioController {
                     x.set(0);
                     y.set(0);
                     SmartDashboard.putBoolean("controller disconnected", true);
+                    isConnected.set(false);
                 }
             } else {
                 disconnectedCounter = 0;
                 x.set(Integer.parseInt(values[0]));
                 y.set(Integer.parseInt(values[1]));
                 SmartDashboard.putBoolean("controller disconnected", false);
+                isConnected.set(true);
             }
             // sleep the thread because otherwise the while loop will run faster than the serial buffer can keep up with
             // this delay makes it more likely to read a complete message each loop and not report the controller as disconnected
@@ -57,6 +62,9 @@ public class RadioController {
         serialReaderThread.start();
     }
 
+    public boolean isConnected() {
+        return isConnected.get();
+    }
 
     public double getX() {
         return (x.get() / 100.);
