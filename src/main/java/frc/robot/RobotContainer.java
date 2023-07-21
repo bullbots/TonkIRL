@@ -23,9 +23,9 @@ import frc.team1891.common.LazyDashboard;
 public class RobotContainer {
   // Subsystems
   private static final Drivetrain drivetrain = Drivetrain.getInstance();
-  private static final AirTank airTank = AirTank.getInstance();
-  private static final Cannon cannon = Cannon.getInstance();
-  private static final LEDs leds = LEDs.getInstance();
+  // private static final AirTank airTank = AirTank.getInstance();
+  // private static final Cannon cannon = Cannon.getInstance();
+  // private static final LEDs leds = LEDs.getInstance();
 
   // Inputs
   private static final RadioController controller = new RadioController();
@@ -50,14 +50,11 @@ public class RobotContainer {
     // LazyDashboard.addNumber("ping", () -> {
     //   return SmartDashboard.getNumber("ping", 0) + 1;
     // });
-    
-    LazyDashboard.addNumber("RadioController/controllerX", 1, controller::getX);
-    LazyDashboard.addNumber("RadioController/controllerY", 1, controller::getY);
   }
 
   private void configureBindings() {
-    drivetrain.setDefaultCommand(new ControllerBasicDrive(drivetrain, controller::getX, controller::getY));
-    airTank.setDefaultCommand(new AirTankDefaultCommand(airTank));
+    drivetrain.setDefaultCommand(new ControllerBasicDrive(drivetrain, controller::getLeftY, controller::getRightX));
+    // airTank.setDefaultCommand(new AirTankDefaultCommand(airTank));
 
     spoofSwitchTrigger.onTrue(new BetterInstantCommand(() -> {
       DriverStationSpoofer.enable();

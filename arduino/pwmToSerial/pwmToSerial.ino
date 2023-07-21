@@ -1,9 +1,8 @@
  
-const int pwmPins[] = {9,11}; //pins in order of
-const int numPwmPins = 2;
+const int pwmPins[] = {2,3,4,5,6,7,8,9}; //pins in order of
+const int numPwmPins = 8;
 
 int pwmVal[numPwmPins];
-bool Estoped = false;
 String currentBus = "";
 void setup() {
   Serial.begin(9600);  // Initialize serial communication
@@ -16,16 +15,11 @@ void loop() {
   currentBus = "{";
   for(int i = 0;i < numPwmPins;i++){
     pwmVal[i] = map(pulseIn(pwmPins[i], HIGH),987,1987,-100,100);
-    if(false){//pwmVal[i] < 900 || pwmVal > 2000
-      Estoped = true;
-      currentBus = "controller fault";
-      break;
-    }else{
-      if(i != 0){
-        currentBus += ",";
-      }
-      currentBus += (String)pwmVal[i];
+
+    if(i != 0){
+      currentBus += ",";
     }
+    currentBus += (String)pwmVal[i];
   }
   currentBus += "}";
   //int pwm1 = map(pulseIn(pwmPin1, HIGH),987,1987,-100,100);
@@ -34,6 +28,6 @@ void loop() {
   //Serial.println("{pwm1: " + (String)pwm1 + " pwm2: " + pwm2 + "}");
   //sprintf(buffer, "{%d,%d}", pwm1, pwm2);
   //Serial.print(buffer);
-  Serial.print(currentBus);
+  Serial.print(currentBus + "\n");
   //delay(100);  // Delay between readings
 }

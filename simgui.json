@@ -25,6 +25,9 @@
         "AnalogPressureSensor": {
           "open": true
         },
+        "DriverStationSpoofer": {
+          "open": true
+        },
         "open": true
       }
     }
