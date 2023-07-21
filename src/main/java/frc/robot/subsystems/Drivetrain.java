@@ -46,6 +46,11 @@ public class Drivetrain extends SubsystemBase {
     rightSlave.setInverted(InvertType.FollowMaster);
   }
 
+  /**
+   * Drives a robot using arcade drive.
+   * @param x forward motion
+   * @param y twist motion
+   */
   public void arcade(double x, double y) {
     diffDrive.arcadeDrive(x, y);
   }
