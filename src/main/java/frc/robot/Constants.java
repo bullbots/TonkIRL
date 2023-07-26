@@ -7,10 +7,10 @@ package frc.robot;
 public class Constants {
     public static class DrivetrainConstants {
         // TODO
-        public static final int LEFT_MASTER_ID = 0;
-        public static final int LEFT_SLAVE_ID = 0;
-        public static final int RIGHT_MASTER_ID = 0;
-        public static final int RIGHT_SLAVE_ID = 0;
+        public static final int LEFT_MASTER_ID = 3;
+        public static final int LEFT_SLAVE_ID = 4;
+        public static final int RIGHT_MASTER_ID = 1;
+        public static final int RIGHT_SLAVE_ID = 2;
     }
     public static class CannonConstants {
         /**
@@ -31,5 +31,7 @@ public class Constants {
         public static final int PRESSURE_REGULATOR_CHANNEL = 7;
 
         public static final int PRESSURE_SENSOR_PORT = 0;
+
+        public static final int MAX_PRESSURE = 100;
     }
 }

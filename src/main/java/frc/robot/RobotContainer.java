@@ -11,21 +11,22 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.cannon.AirTankDefaultCommand;
+import frc.robot.commands.cannon.FireCycle;
 import frc.robot.commands.drivetrain.ControllerBasicDrive;
 import frc.robot.subsystems.AirTank;
 import frc.robot.subsystems.Cannon;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.LEDs;
-import frc.robot.util.DriverStationSpoofer;
 import frc.robot.util.RadioController;
 import frc.team1891.common.LazyDashboard;
+import frc.team1891.illegal.driverstation.DriverStationSpoofer;
 
 public class RobotContainer {
   // Subsystems
   private static final Drivetrain drivetrain = Drivetrain.getInstance();
-  // private static final AirTank airTank = AirTank.getInstance();
-  // private static final Cannon cannon = Cannon.getInstance();
-  // private static final LEDs leds = LEDs.getInstance();
+  private static final AirTank airTank = AirTank.getInstance();
+  private static final Cannon cannon = Cannon.getInstance();
+  private static final LEDs leds = LEDs.getInstance();
 
   // Inputs
   private static final RadioController controller = new RadioController();
@@ -54,7 +55,7 @@ public class RobotContainer {
 
   private void configureBindings() {
     drivetrain.setDefaultCommand(new ControllerBasicDrive(drivetrain, controller::getLeftY, controller::getRightX));
-    // airTank.setDefaultCommand(new AirTankDefaultCommand(airTank));
+    airTank.setDefaultCommand(new AirTankDefaultCommand(airTank));
 
     spoofSwitchTrigger.onTrue(new BetterInstantCommand(() -> {
       DriverStationSpoofer.enable();

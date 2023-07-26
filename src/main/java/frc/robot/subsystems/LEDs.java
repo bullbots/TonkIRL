@@ -6,12 +6,12 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
-import frc.robot.util.DriverStationSpoofer;
 import frc.team1891.common.led.LEDStrip;
 import frc.team1891.common.led.LEDStripInterface;
+import frc.team1891.common.led.LEDStripPattern;
+import frc.team1891.common.led.LEDStripPatterns;
 import frc.team1891.common.led.LEDStripSegment;
-import frc.team1891.common.led.LEDStrip.LEDPattern;
-import frc.team1891.common.led.LEDStrip.LEDPatterns;
+import frc.team1891.illegal.driverstation.DriverStationSpoofer;
 
 public class LEDs extends SubsystemBase {
   private static LEDs instance = null;
@@ -27,7 +27,7 @@ public class LEDs extends SubsystemBase {
   private final LEDStripSegment pressureIndicatorStrip = new LEDStripSegment(leds, 2, 10);
   private final LEDStripSegment mainSegment = new LEDStripSegment(leds, 12, 88);
   
-  private final LEDPattern enabledStatusPattern = (leds) -> {
+  private final LEDStripPattern enabledStatusPattern = (leds) -> {
     if (RobotContainer.spoofSwitchEnabled()) {
       if (DriverStationSpoofer.isEnabled()) {
         leds.setRGB(0, 150, 150, 150);
@@ -48,12 +48,12 @@ public class LEDs extends SubsystemBase {
     }
   };
 
-  private final LEDPattern pressureIndicatorPattern = new LEDPattern() {
+  private final LEDStripPattern pressureIndicatorPattern = new LEDStripPattern() {
     private final AirTank tank = AirTank.getInstance();
     public void draw(LEDStripInterface leds) {
       leds.clear();
 
-      double currentPressure = tank.getPressure(), desiredPressure = tank.getDesiredPressure();
+      double currentPressure = tank.getCurrentPressure(), desiredPressure = tank.getDesiredPressure();
       // set leds orange if too high
       if (currentPressure > desiredPressure * 1.4) {
         leds.setAllRGB(150, 100, 0);
@@ -62,7 +62,7 @@ public class LEDs extends SubsystemBase {
         leds.setAllRGB(0, 150, 0);
       // show a progress bar
       } else {
-        for (int i = 0; i < leds.length() * (tank.getPressure() / tank.getDesiredPressure()); i++) {
+        for (int i = 0; i < leds.length() * (tank.getCurrentPressure() / tank.getDesiredPressure()); i++) {
           leds.setRGB(i, 150, 150, 150);
         }
   
@@ -70,14 +70,17 @@ public class LEDs extends SubsystemBase {
     }
   };
 
+  private final LEDStripPattern rainbow = LEDStripPatterns.RAINBOW();
+
   private LEDs() {
     leds.start();
   }
+  
 
   @Override
   public void periodic() {
     pressureIndicatorPattern.run(pressureIndicatorStrip);
     enabledStatusPattern.run(enabledStatusStrip);
-    LEDPatterns.RAINBOW.run(mainSegment);
+    rainbow.run(mainSegment);
   }
 }

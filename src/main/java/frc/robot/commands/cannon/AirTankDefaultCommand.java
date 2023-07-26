@@ -26,7 +26,7 @@ public class AirTankDefaultCommand extends CommandBase {
   @Override
   public void execute() {
     double desiredPressure = SmartDashboard.getNumber("AirTank/Desired Pressure", 0);
-    if ((airTank.getPressure() < desiredPressure) && (airTank.getPressure() >= -2)) {
+    if ((airTank.getCurrentPressure() < desiredPressure) && (airTank.getCurrentPressure() >= -2)) {
       airTank.openSolenoid();
     } else {
       airTank.closeSolenoid();
