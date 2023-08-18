@@ -27,7 +27,7 @@ public class AirTank extends SubsystemBase {
 
   private AirTank() {
     // Start with pressure of 0
-    setDesiredPressure(0);
+    setDesiredPressure(50);
 
     LazyDashboard.addNumber("AirTank/Current Pressure", pressureSensor::getPressure);
     LazyDashboard.addNumber("AirTank/Raw Voltage of Pressure Sensor", pressureSensor::getVoltage);

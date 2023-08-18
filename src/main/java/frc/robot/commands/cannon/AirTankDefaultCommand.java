@@ -25,7 +25,7 @@ public class AirTankDefaultCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double desiredPressure = SmartDashboard.getNumber("AirTank/Desired Pressure", 0);
+    double desiredPressure = SmartDashboard.getNumber("AirTank/Desired Pressure", 100);
     if ((airTank.getCurrentPressure() < desiredPressure) && (airTank.getCurrentPressure() >= -2)) {
       airTank.openSolenoid();
     } else {
