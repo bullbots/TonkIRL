@@ -35,6 +35,7 @@ public class RobotContainer {
   
   // Triggers
   private static final Trigger spoofSwitchTrigger = new Trigger(() -> !spoofSwitch.get());
+  private static final Trigger shootTrigger = new Trigger(() -> controller.getCH6() > 0);
 
   public RobotContainer() {
     configureBindings();
@@ -65,6 +66,7 @@ public class RobotContainer {
     spoofSwitchTrigger.onFalse(new BetterInstantCommand(() -> {
       DriverStationSpoofer.disable();
     }));
+    shootTrigger.onTrue(new FireCycle(cannon));
   }
 
   public static boolean spoofSwitchEnabled() {
