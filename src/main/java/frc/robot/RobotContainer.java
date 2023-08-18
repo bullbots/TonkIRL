@@ -67,6 +67,7 @@ public class RobotContainer {
       DriverStationSpoofer.disable();
     }));
     shootTrigger.onTrue(new FireCycle(cannon));
+    //shootTrigger.onTrue(new FireCycle(cannon))
   }
 
   public static boolean spoofSwitchEnabled() {

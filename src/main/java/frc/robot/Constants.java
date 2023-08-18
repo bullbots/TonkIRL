@@ -24,10 +24,10 @@ public class Constants {
          *    7____[Compressor and Tank]
          */
 
-        public static final int TOP_LEFT_CHANNEL = 2;
-        public static final int TOP_RIGHT_CHANNEL = 4;
-        public static final int BOTTOM_LEFT_CHANNEL = 3;
-        public static final int BOTTOM_RIGHT_CHANNEL = 1;
+        public static final int TOP_LEFT_CHANNEL = 1;
+        public static final int TOP_RIGHT_CHANNEL = 3;
+        public static final int BOTTOM_LEFT_CHANNEL = 2;
+        public static final int BOTTOM_RIGHT_CHANNEL = 0;
         public static final int PRESSURE_REGULATOR_CHANNEL = 7;
 
         public static final int PRESSURE_SENSOR_PORT = 0;
