@@ -21,11 +21,17 @@
   },
   "NetworkTables": {
     "transitory": {
+      "Shuffleboard": {
+        "open": true
+      },
       "SmartDashboard": {
         "AirTank": {
           "open": true
         },
         "AnalogPressureSensor": {
+          "open": true
+        },
+        "Cannon": {
           "open": true
         },
         "DriverStationSpoofer": {

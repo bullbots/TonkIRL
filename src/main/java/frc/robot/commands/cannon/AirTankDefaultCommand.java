@@ -4,11 +4,14 @@
 
 package frc.robot.commands.cannon;
 
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.AirTank;
+import frc.team1891.common.LazyDashboard;
 
 public class AirTankDefaultCommand extends CommandBase {
+  double desiredPressure = 60;
   private final AirTank airTank;
   /**
    * Creates a command that regulates the pressure of the AirTank
@@ -25,7 +28,12 @@ public class AirTankDefaultCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double desiredPressure = SmartDashboard.getNumber("AirTank/Desired Pressure", 100);
+    //double desiredPressure = LazyDashboard.addNumber("AirTank/Current Pressure", 60);
+    double desiredPressure = SmartDashboard.getNumber("AirTank/Desired Pressure", 40);
+    //LazyDashboard.addNumber("AirTank", ()-> desiredPressure);
+    System.out.print("desired presure " + desiredPressure);
+    
+    
     if ((airTank.getCurrentPressure() < desiredPressure) && (airTank.getCurrentPressure() >= -2)) {
       airTank.openSolenoid();
     } else {
