@@ -4,6 +4,7 @@
 
 package frc.robot.commands.cannon;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Cannon;
 import frc.robot.subsystems.Cannon.Barrel;
@@ -17,7 +18,8 @@ public class FireCycle extends InstantCommand {
     this.cannon = cannon;
     this.currentBarrel = Barrel.TOP_LEFT;
 
-    this.cannon.setPulseDuration(FireBarrel.PULSE_DURATION);
+    //this.cannon.setPulseDuration(FireBarrel.PULSE_DURATION);
+    this.cannon.setPulseDuration(SmartDashboard.getNumber("AirTank/Pulse Duration", FireBarrel.PULSE_DURATION));
   }
 
   // Called when the command is initially scheduled.

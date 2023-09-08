@@ -30,11 +30,13 @@ public class AirTankDefaultCommand extends CommandBase {
   public void execute() {
     //double desiredPressure = LazyDashboard.addNumber("AirTank/Current Pressure", 60);
     double desiredPressure = SmartDashboard.getNumber("AirTank/Desired Pressure", 40);
+    airTank.setDesiredPressure(desiredPressure);
+    
     //LazyDashboard.addNumber("AirTank", ()-> desiredPressure);
     System.out.print("desired presure " + desiredPressure);
     
     
-    if ((airTank.getCurrentPressure() < desiredPressure) && (airTank.getCurrentPressure() >= -2)) {
+    if ((airTank.getCurrentPressure() < airTank.getDesiredPressure()) && (airTank.getCurrentPressure() >= -2)) {
       airTank.openSolenoid();
     } else {
       airTank.closeSolenoid();

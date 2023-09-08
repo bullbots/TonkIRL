@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CannonConstants;
+import frc.robot.commands.cannon.FireBarrel;
 import frc.team1891.common.LazyDashboard;
 import frc.team1891.common.hardware.AnalogPressureSensor;
 
@@ -30,6 +31,7 @@ public class AirTank extends SubsystemBase {
     // Start with pressure of 0
     setDesiredPressure(50);
     SmartDashboard.putNumber("AirTank/Desired Pressure", 40);
+    SmartDashboard.putNumber("AirTank/Pulse Duration", FireBarrel.PULSE_DURATION);
     LazyDashboard.addNumber("AirTank/Current Pressure", pressureSensor::getPressure);
     LazyDashboard.addNumber("AirTank/Raw Voltage of Pressure Sensor", pressureSensor::getVoltage);
     LazyDashboard.addBoolean("AirTank/Regulator Valve Open", pressureRegulator::get);
