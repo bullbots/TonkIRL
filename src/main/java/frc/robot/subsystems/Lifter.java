@@ -17,7 +17,7 @@ public class Lifter extends SubsystemBase{
 
     public Lifter(){
         //TODO change can ID
-        liftMotor = new VictorSPX(0);
+        liftMotor = new VictorSPX(11);
         liftMotor.set(ControlMode.PercentOutput, 0);
     }
 
