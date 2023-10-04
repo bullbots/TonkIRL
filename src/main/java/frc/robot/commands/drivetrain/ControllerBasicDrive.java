@@ -29,7 +29,7 @@ public class ControllerBasicDrive extends CommandBase {
   @Override
   public void execute() {
     Double scale = SmartDashboard.getNumber("DriveTrain/Turning Scale", .5);
-    drivetrain.arcade(MathUtil.applyDeadband(xSupplier.getAsDouble(), .1) * scale, MathUtil.applyDeadband(ySupplier.getAsDouble(), .1));
+    drivetrain.arcade(MathUtil.applyDeadband(xSupplier.getAsDouble(), .1), MathUtil.applyDeadband(ySupplier.getAsDouble() * scale, .1));
   }
 
   // Called once the command ends or is interrupted.

@@ -19,7 +19,6 @@ public class FireCycle extends InstantCommand {
     this.currentBarrel = Barrel.TOP_LEFT;
 
     //this.cannon.setPulseDuration(FireBarrel.PULSE_DURATION);
-    this.cannon.setPulseDuration(SmartDashboard.getNumber("AirTank/Pulse Duration", FireBarrel.PULSE_DURATION));
   }
 
   // Called when the command is initially scheduled.

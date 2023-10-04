@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CannonConstants;
 import frc.team1891.common.LazyDashboard;
@@ -48,6 +49,7 @@ public class Cannon extends SubsystemBase {
   }
 
   public void fire(Barrel barrel) {
+    setPulseDuration(SmartDashboard.getNumber("AirTank/Pulse Duration", .08));
     barrel.solenoid.startPulse();
     System.out.printf("Shot out of '%s' barrel.\n", barrel.name());
   
