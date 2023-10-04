@@ -8,10 +8,12 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Lifter.DefaultLifterCommand;
 import frc.robot.commands.cannon.AirTankDefaultCommand;
+import frc.robot.commands.cannon.FireBarrel;
 import frc.robot.commands.cannon.FireCycle;
 import frc.robot.commands.drivetrain.ControllerBasicDrive;
 import frc.robot.subsystems.AirTank;
@@ -19,6 +21,7 @@ import frc.robot.subsystems.Cannon;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Lifter;
+import frc.robot.subsystems.Cannon.Barrel;
 import frc.robot.util.RadioController;
 import frc.robot.util.YamlLoader;
 import frc.team1891.common.LazyDashboard;
@@ -70,8 +73,9 @@ public class RobotContainer {
     spoofSwitchTrigger.onFalse(new BetterInstantCommand(() -> {
       DriverStationSpoofer.disable();
     }));
+    //shootTrigger.onTrue(new FireCycle(cannon));
+    //shootTrigger.onTrue(new SequentialCommandGroup(new FireBarrel(cannon, Barrel.BOTTOM_LEFT),new FireBarrel(cannon, Barrel.BOTTOM_RIGHT),new FireBarrel(cannon, Barrel.TOP_LEFT),new FireBarrel(cannon, Barrel.TOP_RIGHT)));
     shootTrigger.onTrue(new FireCycle(cannon));
-    //shootTrigger.onTrue(new FireCycle(cannon))
   }
 
   public static boolean spoofSwitchEnabled() {

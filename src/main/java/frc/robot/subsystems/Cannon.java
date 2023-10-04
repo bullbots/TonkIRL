@@ -50,6 +50,7 @@ public class Cannon extends SubsystemBase {
   public void fire(Barrel barrel) {
     barrel.solenoid.startPulse();
     System.out.printf("Shot out of '%s' barrel.\n", barrel.name());
+  
   }
 
   public void setPulseDuration(double durationSeconds) {

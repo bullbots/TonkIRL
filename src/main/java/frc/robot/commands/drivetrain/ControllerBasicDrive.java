@@ -7,6 +7,7 @@ package frc.robot.commands.drivetrain;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
 
@@ -27,7 +28,8 @@ public class ControllerBasicDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    drivetrain.arcade(MathUtil.applyDeadband(xSupplier.getAsDouble(), .1), MathUtil.applyDeadband(ySupplier.getAsDouble(), .1));
+    Double scale = SmartDashboard.getNumber("DriveTrain/Turning Scale", .5);
+    drivetrain.arcade(MathUtil.applyDeadband(xSupplier.getAsDouble(), .1) * scale, MathUtil.applyDeadband(ySupplier.getAsDouble(), .1));
   }
 
   // Called once the command ends or is interrupted.
