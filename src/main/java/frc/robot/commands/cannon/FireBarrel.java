@@ -16,6 +16,6 @@ public class FireBarrel extends InstantCommand {
 
     addRequirements(cannon);
 
-    cannon.setPulseDuration(PULSE_DURATION);
+    //cannon.setPulseDuration(PULSE_DURATION);
   }
 }
