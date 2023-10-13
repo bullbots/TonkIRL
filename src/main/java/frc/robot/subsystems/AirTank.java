@@ -30,7 +30,7 @@ public class AirTank extends SubsystemBase {
   private AirTank() {
     // Start with pressure of 0
     setDesiredPressure(50);
-    SmartDashboard.putNumber("AirTank/Desired Pressure", 40);
+    SmartDashboard.putNumber("AirTank/Desired Pressure", 65);
     SmartDashboard.putNumber("AirTank/Pulse Duration", FireBarrel.PULSE_DURATION);
     LazyDashboard.addNumber("AirTank/Current Pressure", pressureSensor::getPressure);
     LazyDashboard.addNumber("AirTank/Raw Voltage of Pressure Sensor", pressureSensor::getVoltage);
@@ -76,6 +76,10 @@ public class AirTank extends SubsystemBase {
    */
   public void closeSolenoid() {
     pressureRegulator.set(false);
+  }
+  //is true when the valve is open
+  public boolean isOpen(){
+    return pressureRegulator.get();
   }
 
   @Override

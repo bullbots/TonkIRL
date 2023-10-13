@@ -13,6 +13,7 @@ import frc.team1891.common.LazyDashboard;
 public class AirTankDefaultCommand extends CommandBase {
   double desiredPressure = 60;
   private final AirTank airTank;
+  private final Double Tolerance = 5.0;
   /**
    * Creates a command that regulates the pressure of the AirTank
    */
@@ -35,12 +36,21 @@ public class AirTankDefaultCommand extends CommandBase {
     //LazyDashboard.addNumber("AirTank", ()-> desiredPressure);
     System.out.print("desired presure " + desiredPressure);
     
-    
-    if ((airTank.getCurrentPressure() < airTank.getDesiredPressure()) && (airTank.getCurrentPressure() >= -2)) {
-      airTank.openSolenoid();
-    } else {
-      airTank.closeSolenoid();
+    if(airTank.isOpen()){
+      if(airTank.getCurrentPressure() > airTank.getDesiredPressure()){
+        airTank.closeSolenoid();
+      }
+    }else{
+      if(airTank.getCurrentPressure() <= airTank.getDesiredPressure() - Tolerance){
+        airTank.openSolenoid();
+      }
     }
+
+    // if ((airTank.getCurrentPressure() < airTank.getDesiredPressure()) && (airTank.getCurrentPressure() >= -2)) {
+    //   airTank.openSolenoid();
+    // } else {
+    //   airTank.closeSolenoid();
+    // }
   }
 
   // Called once the command ends or is interrupted.

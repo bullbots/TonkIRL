@@ -38,6 +38,7 @@ public class Cannon extends SubsystemBase {
     LazyDashboard.addBoolean("Cannon/Top Right Open", () -> Barrel.TOP_RIGHT.solenoid.get());
     LazyDashboard.addBoolean("Cannon/Bottom Left Open", () -> Barrel.BOTTOM_LEFT.solenoid.get());
     LazyDashboard.addBoolean("Cannon/Bottom Right Open", () -> Barrel.BOTTOM_RIGHT.solenoid.get());
+    setPulseDuration(.06);
   }
 
   public void open(Barrel barrel) {
@@ -52,7 +53,7 @@ public class Cannon extends SubsystemBase {
     setPulseDuration(SmartDashboard.getNumber("AirTank/Pulse Duration", .08));
     barrel.solenoid.startPulse();
     System.out.printf("Shot out of '%s' barrel.\n", barrel.name());
-  
+    
   }
 
   public void setPulseDuration(double durationSeconds) {
