@@ -41,8 +41,13 @@ public class RobotContainer {
   
   // Triggers
   private static final Trigger spoofSwitchTrigger = new Trigger(() -> !spoofSwitch.get());
-  private static final Trigger shootTrigger = new Trigger(() -> controller.getCH6() > 0);
+  private static final Trigger shootTrigger = new Trigger(() -> controller.getCH6() > 0.1);
 
+  private static final Trigger controllerArmed = new Trigger(() -> controller.getCH5() < -.9 && !spoofSwitch.get());
+  private static final Trigger controllerDisarmed = new Trigger(() -> controller.getCH5() > .9 && !spoofSwitch.get());
+  private static final Trigger controllerDisabled = new Trigger(() -> (controller.getCH5() < .1 || controller.getCH5() > -.1));
+
+  private static final Command airTankCommand = new AirTankDefaultCommand(airTank);
   public RobotContainer() {
     configureBindings();
 
@@ -60,12 +65,15 @@ public class RobotContainer {
     //   return SmartDashboard.getNumber("ping", 0) + 1;
     // });
   }
-
+  
   private void configureBindings() {
     drivetrain.setDefaultCommand(new ControllerBasicDrive(drivetrain, controller::getLeftY, controller::getRightX));
-    airTank.setDefaultCommand(new AirTankDefaultCommand(airTank));
+    airTank.setDefaultCommand(airTankCommand);
     lifter.setDefaultCommand(new DefaultLifterCommand(lifter, ()-> controller.getRightY()));
-
+    
+    controllerArmed.onTrue(new InstantCommand(()->airTank.setDefaultCommand(airTankCommand), airTank));
+    controllerDisarmed.onTrue(new InstantCommand(()->airTank.removeDefaultCommand(), airTank));
+    
     spoofSwitchTrigger.onTrue(new BetterInstantCommand(() -> {
       DriverStationSpoofer.enable();
     }));
