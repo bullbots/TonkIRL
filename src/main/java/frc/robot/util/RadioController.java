@@ -99,6 +99,8 @@ public class RadioController {
         LazyDashboard.addNumber("RadioController/getCH6", 1, this::getCH6);
         LazyDashboard.addNumber("RadioController/getCH7", 1, this::getCH7);
         LazyDashboard.addNumber("RadioController/getCH8", 1, this::getCH8);
+        LazyDashboard.addNumber("RadioController/getLeftDial", 1, this::getLeftDial);
+
     }
 
     /**

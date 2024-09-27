@@ -4,21 +4,26 @@
 
 package frc.robot.commands.cannon;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.AirTank;
 import frc.team1891.common.LazyDashboard;
 
 public class AirTankDefaultCommand extends CommandBase {
   double desiredPressure = 60;
+  private final DoubleSupplier getLeftDial;
   private final AirTank airTank;
   /**
    * Creates a command that regulates the pressure of the AirTank
    */
-  public AirTankDefaultCommand(AirTank airTank) {
+  public AirTankDefaultCommand(AirTank airTank, DoubleSupplier getLeftDial) {
     addRequirements(airTank);
     this.airTank = airTank;
+    this.getLeftDial = getLeftDial;
   }
 
   // Called when the command is initially scheduled.
@@ -29,7 +34,11 @@ public class AirTankDefaultCommand extends CommandBase {
   @Override
   public void execute() {
     //double desiredPressure = LazyDashboard.addNumber("AirTank/Current Pressure", 60);
-    double desiredPressure = SmartDashboard.getNumber("AirTank/Desired Pressure", 40);
+    //double desiredPressure = SmartDashboard.getNumber("AirTank/Desired Pressure", 40);
+
+    double slope = (Constants.CannonConstants.MAX_FIRING_PRESSURE-Constants.CannonConstants.MIN_FIRING_PRESSURE)/2;
+    double yInt = (Constants.CannonConstants.MAX_FIRING_PRESSURE-Constants.CannonConstants.MIN_FIRING_PRESSURE)/2;
+    double desiredPressure = slope * (getLeftDial.getAsDouble() - yInt);
     airTank.setDesiredPressure(desiredPressure);
     
     //LazyDashboard.addNumber("AirTank", ()-> desiredPressure);

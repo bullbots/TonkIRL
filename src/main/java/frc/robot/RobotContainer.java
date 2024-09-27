@@ -63,7 +63,7 @@ public class RobotContainer {
 
   private void configureBindings() {
     drivetrain.setDefaultCommand(new ControllerBasicDrive(drivetrain, controller::getLeftY, controller::getRightX));
-    airTank.setDefaultCommand(new AirTankDefaultCommand(airTank));
+    airTank.setDefaultCommand(new AirTankDefaultCommand(airTank, controller::getLeftDial));
     lifter.setDefaultCommand(new DefaultLifterCommand(lifter, ()-> controller.getRightY()));
 
     spoofSwitchTrigger.onTrue(new BetterInstantCommand(() -> {
