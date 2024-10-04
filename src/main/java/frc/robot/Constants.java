@@ -28,7 +28,9 @@ public class Constants {
         public static final int TOP_RIGHT_CHANNEL = 3;
         public static final int BOTTOM_LEFT_CHANNEL = 2;
         public static final int BOTTOM_RIGHT_CHANNEL = 0;
-        public static final int PRESSURE_REGULATOR_CHANNEL = 7;
+        public static final int PRESSURE_REGULATOR_IN_CHANNEL = 7;
+        public static final int PRESSURE_REGULATOR_OUT_CHANNEL = 8; //to be determined
+
 
         public static final int PRESSURE_SENSOR_PORT = 0;
 
@@ -36,5 +38,7 @@ public class Constants {
 
         public static final double MIN_FIRING_PRESSURE = 20;
         public static final double MAX_FIRING_PRESSURE = 50;
+
+        public static final double PRESSURE_TOLERANCE = 2;
     }
 }

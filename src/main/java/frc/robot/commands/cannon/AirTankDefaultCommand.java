@@ -28,7 +28,7 @@ public class AirTankDefaultCommand extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() { }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -37,18 +37,24 @@ public class AirTankDefaultCommand extends CommandBase {
     //double desiredPressure = SmartDashboard.getNumber("AirTank/Desired Pressure", 40);
 
     double slope = (Constants.CannonConstants.MAX_FIRING_PRESSURE-Constants.CannonConstants.MIN_FIRING_PRESSURE)/2;
-    double yInt = (Constants.CannonConstants.MAX_FIRING_PRESSURE-Constants.CannonConstants.MIN_FIRING_PRESSURE)/2;
-    double desiredPressure = slope * (getLeftDial.getAsDouble() - yInt);
+    double yInt = (Constants.CannonConstants.MAX_FIRING_PRESSURE+Constants.CannonConstants.MIN_FIRING_PRESSURE)/2;
+    double desiredPressure = (slope * getLeftDial.getAsDouble()) + yInt;
+
     airTank.setDesiredPressure(desiredPressure);
     
-    //LazyDashboard.addNumber("AirTank", ()-> desiredPressure);
-    System.out.print("desired presure " + desiredPressure);
+    //LazyDashboard.addNumber("AirTank", ()-> desiredPressure);    
     
+
     
-    if ((airTank.getCurrentPressure() < airTank.getDesiredPressure()) && (airTank.getCurrentPressure() >= -2)) {
-      airTank.openSolenoid();
+    if ((airTank.getCurrentPressure() < airTank.getDesiredPressure() - Constants.CannonConstants.PRESSURE_TOLERANCE) && (airTank.getCurrentPressure() >= -2)) {
+      airTank.openInSolenoid();
+      airTank.closeOutSolenoid();
+    } else if (airTank.getCurrentPressure() > airTank.getDesiredPressure() + Constants.CannonConstants.PRESSURE_TOLERANCE) {
+      airTank.closeInSolenoid();
+      airTank.openOutSolenoid();
     } else {
-      airTank.closeSolenoid();
+      airTank.closeOutSolenoid();
+      airTank.closeInSolenoid();
     }
   }
 
@@ -56,7 +62,7 @@ public class AirTankDefaultCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     // open solenoid for safety, so we don't accidentally build pressure
-    airTank.openSolenoid();
+    airTank.openInSolenoid();
   }
 
   // Returns true when the command should end.

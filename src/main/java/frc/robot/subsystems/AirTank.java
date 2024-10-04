@@ -24,7 +24,9 @@ public class AirTank extends SubsystemBase {
   }
 
   private final AnalogPressureSensor pressureSensor = new AnalogPressureSensor(CannonConstants.PRESSURE_SENSOR_PORT, .5, 4.5, 0, 100);
-  private final Solenoid pressureRegulator = new Solenoid(PneumaticsModuleType.CTREPCM, CannonConstants.PRESSURE_REGULATOR_CHANNEL);
+  private final Solenoid pressureRegulatorIn = new Solenoid(PneumaticsModuleType.CTREPCM, CannonConstants.PRESSURE_REGULATOR_IN_CHANNEL);
+  private final Solenoid pressureRegulatorOut = new Solenoid(PneumaticsModuleType.CTREPCM, CannonConstants.PRESSURE_REGULATOR_OUT_CHANNEL);
+
 
   private double desiredPressure;
 
@@ -35,7 +37,7 @@ public class AirTank extends SubsystemBase {
     SmartDashboard.putNumber("AirTank/Pulse Duration", FireBarrel.PULSE_DURATION);
     LazyDashboard.addNumber("AirTank/Current Pressure", pressureSensor::getPressure);
     LazyDashboard.addNumber("AirTank/Raw Voltage of Pressure Sensor", pressureSensor::getVoltage);
-    LazyDashboard.addBoolean("AirTank/Regulator Valve Open", pressureRegulator::get);
+    LazyDashboard.addBoolean("AirTank/Regulator Valve Open", pressureRegulatorIn::get);
   }
 
   /**
@@ -68,16 +70,25 @@ public class AirTank extends SubsystemBase {
   /**
    * Opens the solenoid to let air into the shooting tank
    */
-  public void openSolenoid() {
-    pressureRegulator.set(true);
+  public void openInSolenoid() {
+    pressureRegulatorIn.set(true);
   }
 
   /**
    * Opens the solenoid to let air into the shooting tank
    */
-  public void closeSolenoid() {
-    pressureRegulator.set(false);
+  public void closeInSolenoid() {
+    pressureRegulatorIn.set(false);
   }
+
+  public void openOutSolenoid() {
+    pressureRegulatorOut.set(true);
+  }
+
+  public void closeOutSolenoid() {
+    pressureRegulatorOut.set(false);
+  }
+
 
   @Override
   public void periodic() {}
