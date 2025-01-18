@@ -27,7 +27,7 @@ public class AirTank extends SubsystemBase {
 
   private double desiredPressure;
 
-  private AirTank() {
+   AirTank() {
     // Start with pressure of 0
     setDesiredPressure(50);
     SmartDashboard.putNumber("AirTank/Desired Pressure", 65);

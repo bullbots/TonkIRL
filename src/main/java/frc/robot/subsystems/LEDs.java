@@ -26,7 +26,7 @@ public class LEDs extends SubsystemBase {
     return instance;
   }
 
-  private final LEDStrip leds = new LEDStrip(0, 336);
+  private final LEDStrip leds = new LEDStrip(9, 336);
   private final LEDStripSegment enabledStatusStrip = new LEDStripSegment(leds, 0, 2);
   private final LEDStripSegment pressureIndicatorStrip = new LEDStripSegment(leds, 2, 10);
   private final LEDStripSegment mainSegment = new LEDStripSegment(leds, 12, 68);
@@ -41,7 +41,7 @@ public class LEDs extends SubsystemBase {
   private final LEDStripPattern enabledStatusPattern = (leds) -> {
     if (RobotContainer.spoofSwitchEnabled()) {
       if (DriverStationSpoofer.isEnabled()) {
-        leds.setRGB(0, 150, 150, 150);
+        leds.setRGB(0, 0, 150, 0);
       } else {
         leds.setRGB(0, 150, 0, 0);
       }
@@ -65,16 +65,16 @@ public class LEDs extends SubsystemBase {
       leds.clear();
 
       double currentPressure = tank.getCurrentPressure(), desiredPressure = tank.getDesiredPressure();
-      // set leds orange if too high
+      // set leds red if too high
       if (currentPressure > desiredPressure * 1.4) {
-        leds.setAllRGB(150, 100, 0);
+        leds.setAllRGB(150, 0, 0);
       // set leds green if the pressure is reached
       } else if (currentPressure > desiredPressure) {
         leds.setAllRGB(0, 150, 0);
-      // show a progress bar
+      // show a progress bar that's Bullbots blue
       } else {
         for (int i = 0; i < leds.length() * (tank.getCurrentPressure() / tank.getDesiredPressure()); i++) {
-          leds.setRGB(i, 150, 150, 150);
+          leds.setRGB(i, 3, 11, 156);
         }
   
       }
