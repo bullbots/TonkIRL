@@ -26,7 +26,7 @@ public class LEDs extends SubsystemBase {
     return instance;
   }
 
-  private final LEDStrip leds = new LEDStrip(9, 336);
+  private final LEDStrip leds = new LEDStrip(9, 22);
   private final LEDStripSegment enabledStatusStrip = new LEDStripSegment(leds, 0, 2);
   private final LEDStripSegment pressureIndicatorStrip = new LEDStripSegment(leds, 2, 10);
   private final LEDStripSegment mainSegment = new LEDStripSegment(leds, 12, 68);
