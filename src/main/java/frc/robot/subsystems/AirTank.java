@@ -30,7 +30,7 @@ public class AirTank extends SubsystemBase {
    AirTank() {
     // Start with pressure of 0
     setDesiredPressure(50);
-    SmartDashboard.putNumber("AirTank/Desired Pressure", 65);
+    SmartDashboard.putNumber("AirTank/Desired Pressure", 50);
     SmartDashboard.putNumber("AirTank/Pulse Duration", FireBarrel.PULSE_DURATION);
     LazyDashboard.addNumber("AirTank/Current Pressure", pressureSensor::getPressure);
     LazyDashboard.addNumber("AirTank/Raw Voltage of Pressure Sensor", pressureSensor::getVoltage);

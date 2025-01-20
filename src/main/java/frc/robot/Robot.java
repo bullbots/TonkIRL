@@ -28,6 +28,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
     
     m_leds.periodic();
+    
   }
 
   @Override
