@@ -6,10 +6,6 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
-import frc.robot.util.YamlLoader;
-import frc.team1891.common.led.LEDMatrix;
-import frc.team1891.common.led.LEDMatrixPattern;
-import frc.team1891.common.led.LEDMatrixPattern.AnimatedLEDMatrixPattern;
 import frc.team1891.common.led.LEDStrip;
 import frc.team1891.common.led.LEDStripInterface;
 import frc.team1891.common.led.LEDStripPattern;
@@ -31,13 +27,6 @@ public class LEDs extends SubsystemBase {
   private final LEDStripSegment pressureIndicatorStrip = new LEDStripSegment(leds, 2, 10);
   private final LEDStripSegment mainSegment = new LEDStripSegment(leds, 12, 99);
 
-  //private final LEDMatrix matrix = new LEDMatrix(leds, 80, 16, 16, false);
-
-  private final LEDMatrixPattern offlinePattern = new AnimatedLEDMatrixPattern(8, YamlLoader.getVideo("first_pixels"));
-  private final LEDMatrixPattern sad = (leds) -> {
-    leds.setMatrixRGB(YamlLoader.getImage("sad-face-frown"));
-  };
-  
   private final LEDStripPattern enabledStatusPattern = (leds) -> {
     if (RobotContainer.spoofSwitchEnabled()) {
       if (DriverStationSpoofer.isEnabled()) {
