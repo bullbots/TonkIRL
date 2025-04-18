@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.team1891.common.led.LEDStrip;
@@ -63,7 +64,7 @@ public class LEDs extends SubsystemBase {
         leds.setAllRGB(0, 150, 0);
       // show a progress bar that's Bullbots blue
       } else {
-        System.out.println("test");
+        // System.out.println("test");
         for (int i = 0; i < 10 * (tank.getCurrentPressure() / tank.getDesiredPressure()); i++) {
           leds.setRGB(i, 18, 0, 222);
         }
@@ -86,6 +87,8 @@ public class LEDs extends SubsystemBase {
     enabledStatusPattern.run(enabledStatusStrip);
     rainbow.run(mainSegment);
 
+    RobotContainer.myStringLog.append("LEDS periodic");
+    
     //sad.run(matrix);
   }
 }

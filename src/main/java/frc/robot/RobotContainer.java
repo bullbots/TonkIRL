@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -26,6 +27,9 @@ import frc.robot.util.RadioController;
 import frc.robot.util.YamlLoader;
 import frc.team1891.common.LazyDashboard;
 import frc.team1891.illegal.driverstation.DriverStationSpoofer;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.StringLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 
 public class RobotContainer {
   // Subsystems
@@ -47,9 +51,19 @@ public class RobotContainer {
   private static final Trigger controllerDisarmed = new Trigger(() -> controller.getCH5() > .9 && !spoofSwitch.get());
   private static final Trigger controllerDisabled = new Trigger(() -> (controller.getCH5() < .1 || controller.getCH5() > -.1));
 
+  public static DataLog log;
+  public static StringLogEntry myStringLog;
+  
   private static final Command airTankCommand = new AirTankDefaultCommand(airTank);
   public RobotContainer() {
     configureBindings();
+    System.out.println(DataLogManager.getLogDir());
+    DataLogManager.start("/media/sdb1");
+    log = DataLogManager.getLog();
+    DriverStation.startDataLog(log);
+    myStringLog = new StringLogEntry(log, "/my/string");
+    System.out.println(DataLogManager.getLogDir());
+    myStringLog.append("Constructor for RobotContainer...");
 
     // for (int i = 1; i < 10; i++) {
     //   DigitalInput dio = new DigitalInput(i);
