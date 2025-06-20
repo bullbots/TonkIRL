@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -29,14 +30,15 @@ import frc.team1891.common.LazyDashboard;
 import frc.team1891.illegal.driverstation.DriverStationSpoofer;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.StringLogEntry;
-import edu.wpi.first.wpilibj.DataLogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class RobotContainer {
   // Subsystems
   private static final Drivetrain drivetrain = Drivetrain.getInstance();
   private static final AirTank airTank = AirTank.getInstance();
   private static final Cannon cannon = Cannon.getInstance();
-  private static final LEDs leds = LEDs.getInstance();
+  private static LEDs leds;
   private static final Lifter lifter = Lifter.getInstance();
 
   // Inputs
@@ -53,26 +55,47 @@ public class RobotContainer {
 
   public static DataLog log;
   public static StringLogEntry myStringLog;
+
+  public static Logger1891 logger;
+  
+  
   
   private static final Command airTankCommand = new AirTankDefaultCommand(airTank);
   public RobotContainer() {
+    System.out.println("hello");
     configureBindings();
-    System.out.println(DataLogManager.getLogDir());
-    DataLogManager.start("/media/sdb1");
-    log = DataLogManager.getLog();
-    DriverStation.startDataLog(log);
-    myStringLog = new StringLogEntry(log, "/my/string");
-    System.out.println(DataLogManager.getLogDir());
-    myStringLog.append("Constructor for RobotContainer...");
+    //System.out.println(DataLogManager.getLogDir());
+    logger = new Logger1891();
+
+    //  DataLogManager.start("/media/sda1");
+    // DataLogManager.start();
+    // log = DataLogManager.getLog();
+    // //DriverStation.startDataLog(log);
+    // myStringLog = new StringLogEntry(log, "/test");
+    // myStringLog.append("This is a test. Hi Mike");
+    logger.info("in RobotContainer");
+    System.out.println("hello");
+    System.out.println("testing");
+    System.out.println("more commands");
+    System.out.println("something else");
+   
+   // logger.append("Constructor for RobotContainer...");
+
 
     // for (int i = 1; i < 10; i++) {
     //   DigitalInput dio = new DigitalInput(i);
     //   LazyDashboard.addBoolean("DIO "+i, dio::get);
     // }
 
+    
+  
+
 
     LazyDashboard.addBoolean("DriverStationSpoofer/enableSwitch", spoofSwitchTrigger::getAsBoolean);
     LazyDashboard.addBoolean("DriverStationSpoofer/isSpoofing", DriverStationSpoofer::isEnabled);
+
+    //create needed object things
+    leds = LEDs.getInstance();
 
     // SmartDashboard.putNumber("ping", 0);
     // LazyDashboard.addNumber("ping", () -> {
@@ -89,10 +112,15 @@ public class RobotContainer {
     controllerDisarmed.onTrue(new InstantCommand(()->airTank.removeDefaultCommand(), airTank));
     
     spoofSwitchTrigger.onTrue(new BetterInstantCommand(() -> {
+
+      //System.out.println(DataLogManager.getLogDir());
+     // myStringLog.append("Robot Turn On!!!");
       DriverStationSpoofer.enable();
     }));
 
     spoofSwitchTrigger.onFalse(new BetterInstantCommand(() -> {
+
+      //myStringLog.append("Robot Turn Off");
       DriverStationSpoofer.disable();
     }));
     //shootTrigger.onTrue(new FireCycle(cannon));

@@ -20,6 +20,7 @@ public class LEDs extends SubsystemBase {
     if (instance == null) {
       instance = new LEDs();
     }
+    RobotContainer.logger.info("LEDs getInstance");
     return instance;
   }
 
@@ -87,7 +88,7 @@ public class LEDs extends SubsystemBase {
     enabledStatusPattern.run(enabledStatusStrip);
     rainbow.run(mainSegment);
 
-    RobotContainer.myStringLog.append("LEDS periodic");
+    //RobotContainer.logger4j.info("LEDS periodic");
     
     //sad.run(matrix);
   }
