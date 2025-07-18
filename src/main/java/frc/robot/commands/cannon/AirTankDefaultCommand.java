@@ -7,6 +7,7 @@ package frc.robot.commands.cannon;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Logger1891;
 import frc.robot.subsystems.AirTank;
 import frc.team1891.common.LazyDashboard;
 
@@ -20,6 +21,7 @@ public class AirTankDefaultCommand extends CommandBase {
   public AirTankDefaultCommand(AirTank airTank) {
     addRequirements(airTank);
     this.airTank = airTank;
+    Logger1891.info("AirtankDefault command");
   }
 
   // Called when the command is initially scheduled.
@@ -58,6 +60,7 @@ public class AirTankDefaultCommand extends CommandBase {
   public void end(boolean interrupted) {
     // open solenoid for safety, so we don't accidentally build pressure
     airTank.openSolenoid();
+    Logger1891.info("AirtankDefault end");
   }
 
   // Returns true when the command should end.

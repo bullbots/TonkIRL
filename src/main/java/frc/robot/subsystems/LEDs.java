@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Logger1891;
 import frc.robot.RobotContainer;
 import frc.team1891.common.led.LEDStrip;
 import frc.team1891.common.led.LEDStripInterface;
@@ -20,7 +21,7 @@ public class LEDs extends SubsystemBase {
     if (instance == null) {
       instance = new LEDs();
     }
-    RobotContainer.logger.info("LEDs getInstance");
+    Logger1891.info("LEDs getInstance");
     return instance;
   }
 

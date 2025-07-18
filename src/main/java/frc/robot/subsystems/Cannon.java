@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CannonConstants;
+import frc.robot.Logger1891;
 import frc.team1891.common.LazyDashboard;
 
 public class Cannon extends SubsystemBase {
@@ -17,6 +18,7 @@ public class Cannon extends SubsystemBase {
     if (instance == null) {
       instance = new Cannon();
     }
+    
     return instance;
   }
 
@@ -43,17 +45,19 @@ public class Cannon extends SubsystemBase {
 
   public void open(Barrel barrel) {
     barrel.solenoid.set(true);
+    Logger1891.info("Cannon open");
   }
 
   public void close(Barrel barrel) {
     barrel.solenoid.set(false);
+    Logger1891.info("Cannon close");
   }
 
   public void fire(Barrel barrel) {
     setPulseDuration(SmartDashboard.getNumber("AirTank/Pulse Duration", .08));
     barrel.solenoid.startPulse();
     System.out.printf("Shot out of '%s' barrel.\n", barrel.name());
-    
+    Logger1891.info("Cannon fire");
   }
 
   public void setPulseDuration(double durationSeconds) {
@@ -61,6 +65,7 @@ public class Cannon extends SubsystemBase {
     Barrel.TOP_RIGHT.solenoid.setPulseDuration(durationSeconds);
     Barrel.BOTTOM_LEFT.solenoid.setPulseDuration(durationSeconds);
     Barrel.BOTTOM_RIGHT.solenoid.setPulseDuration(durationSeconds);
+    Logger1891.info("Cannon setPulseDuration");
   }
 
   @Override

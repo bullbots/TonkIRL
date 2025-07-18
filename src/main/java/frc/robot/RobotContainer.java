@@ -56,7 +56,6 @@ public class RobotContainer {
   public static DataLog log;
   public static StringLogEntry myStringLog;
 
-  public static Logger1891 logger;
   
   
   
@@ -65,7 +64,6 @@ public class RobotContainer {
     System.out.println("hello");
     configureBindings();
     //System.out.println(DataLogManager.getLogDir());
-    logger = new Logger1891();
 
     //  DataLogManager.start("/media/sda1");
     // DataLogManager.start();
@@ -73,7 +71,7 @@ public class RobotContainer {
     // //DriverStation.startDataLog(log);
     // myStringLog = new StringLogEntry(log, "/test");
     // myStringLog.append("This is a test. Hi Mike");
-    logger.info("in RobotContainer");
+    Logger1891.info("in RobotContainer");
     System.out.println("hello");
     System.out.println("testing");
     System.out.println("more commands");
@@ -112,14 +110,14 @@ public class RobotContainer {
     controllerDisarmed.onTrue(new InstantCommand(()->airTank.removeDefaultCommand(), airTank));
     
     spoofSwitchTrigger.onTrue(new BetterInstantCommand(() -> {
-
+      Logger1891.info("spoofSwitchTrigger onTrue");
       //System.out.println(DataLogManager.getLogDir());
      // myStringLog.append("Robot Turn On!!!");
       DriverStationSpoofer.enable();
     }));
 
     spoofSwitchTrigger.onFalse(new BetterInstantCommand(() -> {
-
+      Logger1891.info("spoofSwitchTrigger onFalse");
       //myStringLog.append("Robot Turn Off");
       DriverStationSpoofer.disable();
     }));

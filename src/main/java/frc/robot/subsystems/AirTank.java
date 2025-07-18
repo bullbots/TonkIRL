@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CannonConstants;
+import frc.robot.Logger1891;
 import frc.robot.commands.cannon.FireBarrel;
 import frc.team1891.common.LazyDashboard;
 import frc.team1891.common.hardware.AnalogPressureSensor;
@@ -19,6 +20,7 @@ public class AirTank extends SubsystemBase {
     if (instance == null) {
       instance = new AirTank();
     }
+    Logger1891.info("AirTank getInstance");
     return instance;
   }
 
@@ -43,6 +45,7 @@ public class AirTank extends SubsystemBase {
   public void setDesiredPressure(double pressure) {
     // SmartDashboard.putNumber("AirTank/Desired Pressure", pressure);
     desiredPressure = pressure;
+    Logger1891.info("AirTank setPressure");
   }
 
   /**
@@ -51,6 +54,7 @@ public class AirTank extends SubsystemBase {
   public double getDesiredPressure() {
     // return SmartDashboard.getNumber("AirTank/Desired Pressure", -1);
     return desiredPressure;
+    
   }
 
   // public boolean atDesiredPressure() {
@@ -69,6 +73,7 @@ public class AirTank extends SubsystemBase {
    */
   public void openSolenoid() {
     pressureRegulator.set(true);
+    Logger1891.info("AirTank openSolenoid");
   }
 
   /**
@@ -76,6 +81,7 @@ public class AirTank extends SubsystemBase {
    */
   public void closeSolenoid() {
     pressureRegulator.set(false);
+    Logger1891.info("AirTank closeSolenoid");
   }
   //is true when the valve is open
   public boolean isOpen(){
