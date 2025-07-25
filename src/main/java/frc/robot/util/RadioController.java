@@ -43,7 +43,7 @@ public class RadioController {
         while (!Thread.currentThread().isInterrupted()) {
             final String read = reader.read();
             String[] values = read.split(",");
-            if (values.length == 1) {
+            if (values.length == 1 || Integer.parseInt(values[2]) < -1.2) {
                 disconnectedCounter++;
                 if (disconnectedCounter > 5) {
                     // TODO: Safety Check

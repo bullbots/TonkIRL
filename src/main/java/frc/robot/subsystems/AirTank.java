@@ -24,7 +24,13 @@ public class AirTank extends SubsystemBase {
     return instance;
   }
 
-  private final AnalogPressureSensor pressureSensor = new AnalogPressureSensor(CannonConstants.PRESSURE_SENSOR_PORT, .5, 4.5, 0, 100);
+  private final AnalogPressureSensor pressureSensor = new AnalogPressureSensor(CannonConstants.PRESSURE_SENSOR_PORT, .5, 4.5, 0, 100) {
+    // Invert pressure just in case the sensor was installed wrong.
+    @Override
+    public double getPressure() {
+      return Math.abs(super.getPressure());
+    };
+  };
   private final Solenoid pressureRegulator = new Solenoid(PneumaticsModuleType.CTREPCM, CannonConstants.PRESSURE_REGULATOR_CHANNEL);
 
   private double desiredPressure;
