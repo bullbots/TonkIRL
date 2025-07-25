@@ -10,11 +10,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CannonConstants;
 import frc.robot.Logger1891;
+import frc.robot.Robot;
 import frc.robot.commands.cannon.FireBarrel;
 import frc.team1891.common.LazyDashboard;
 import frc.team1891.common.hardware.AnalogPressureSensor;
 
 public class AirTank extends SubsystemBase {
+  public static final double MAX_PRESSURE = 80;
+
   private static AirTank instance = null;
   public static AirTank getInstance() {
     if (instance == null) {
@@ -37,10 +40,14 @@ public class AirTank extends SubsystemBase {
 
    AirTank() {
     // Start with pressure of 0
-    setDesiredPressure(50);
-    SmartDashboard.putNumber("AirTank/Desired Pressure", 50);
+    setDesiredPressure(0);
+    SmartDashboard.putNumber("AirTank/Desired Pressure", 0);
     SmartDashboard.putNumber("AirTank/Pulse Duration", FireBarrel.PULSE_DURATION);
-    LazyDashboard.addNumber("AirTank/Current Pressure", pressureSensor::getPressure);
+    if (Robot.isReal()) {
+      LazyDashboard.addNumber("AirTank/Current Pressure", pressureSensor::getPressure);
+    } else {
+      SmartDashboard.putNumber("AirTank/Current Pressure", 0);
+    }
     LazyDashboard.addNumber("AirTank/Raw Voltage of Pressure Sensor", pressureSensor::getVoltage);
     LazyDashboard.addBoolean("AirTank/Regulator Valve Open", pressureRegulator::get);
   }
@@ -49,9 +56,9 @@ public class AirTank extends SubsystemBase {
    * Sets the desired pressure in the shooting tank.
    */
   public void setDesiredPressure(double pressure) {
-    // SmartDashboard.putNumber("AirTank/Desired Pressure", pressure);
+    SmartDashboard.putNumber("AirTank/Desired Pressure", pressure);
     desiredPressure = pressure;
-    Logger1891.info("AirTank setPressure");
+    // Logger1891.info("AirTank setPressure");
   }
 
   /**
@@ -72,6 +79,7 @@ public class AirTank extends SubsystemBase {
    */
   public double getCurrentPressure() {
     return pressureSensor.getPressure();
+    // return Robot.isReal() ? pressureSensor.getPressure() : SmartDashboard.getNumber("AirTank/Current Pressure", 0);
   }
 
   /**

@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Robot;
 import frc.team1891.common.LazyDashboard;
 import frc.team1891.illegal.driverstation.DriverStationSpoofer;
 
@@ -20,7 +21,7 @@ public class RadioController {
     public enum SwitchState {
         LOW,
         MID,
-        HIGH
+        HIGH;
     }
     
     private final AtomicInteger 
@@ -35,6 +36,7 @@ public class RadioController {
 
     private final AtomicBoolean isConnected = new AtomicBoolean(false);
 
+    // This thread is constantly running and updating the values of the Radio Controller to 
     private final Thread serialReaderThread = new Thread(() -> {
         final SerialPort port = new SerialPort(9600, Port.kUSB1);
         final SerialReader reader = new SerialReader(port);
@@ -43,13 +45,13 @@ public class RadioController {
         while (!Thread.currentThread().isInterrupted()) {
             final String read = reader.read();
             String[] values = read.split(",");
+            // values[2] shoots down to -1.3 or so when the controller turns off, so it's a janky way of checking that safety.
             if (values.length == 1 || Integer.parseInt(values[2]) < -1.2) {
                 disconnectedCounter++;
                 if (disconnectedCounter > 5) {
-                    // TODO: Safety Check
-                    // if (DriverStationSpoofer.isEnabled()) {
-                    //     DriverStationSpoofer.disable();
-                    // }
+                    isConnected.set(false);
+                    SmartDashboard.putBoolean("RadioController/controller connected", false);
+                
                     rightX.set(0);
                     rightY.set(0);
                     leftY.set(0);
@@ -58,10 +60,12 @@ public class RadioController {
                     ch6.set(0);
                     ch7.set(0);
                     ch8.set(0);
-                    SmartDashboard.putBoolean("RadioController/controller connected", false);
                 }
             } else {
+                isConnected.set(true);
+                SmartDashboard.putBoolean("RadioController/controller connected", true);
                 disconnectedCounter = 0;
+
                 rightX.set(Integer.parseInt(values[0]));
                 rightY.set(Integer.parseInt(values[1]));
                 leftY.set(Integer.parseInt(values[2]));
@@ -70,7 +74,6 @@ public class RadioController {
                 ch6.set(Integer.parseInt(values[5]));
                 ch7.set(Integer.parseInt(values[6]));
                 ch8.set(Integer.parseInt(values[7]));
-                SmartDashboard.putBoolean("RadioController/controller connected", true);
             }
             // sleep the thread because otherwise the while loop will run faster than the serial buffer can keep up with
             // this delay makes it more likely to read a complete message each loop and not report the controller as disconnected
@@ -91,14 +94,25 @@ public class RadioController {
         serialReaderThread.setDaemon(true);
         serialReaderThread.start();
 
-        LazyDashboard.addNumber("RadioController/getRightX", 1, this::getRightX);
-        LazyDashboard.addNumber("RadioController/getRightY", 1, this::getRightY);
-        LazyDashboard.addNumber("RadioController/getLeftY", 1, this::getLeftY);
-        LazyDashboard.addNumber("RadioController/getLeftX", 1, this::getLeftX);
-        LazyDashboard.addNumber("RadioController/getCH5", 1, this::getCH5);
-        LazyDashboard.addNumber("RadioController/getCH6", 1, this::getCH6);
-        LazyDashboard.addNumber("RadioController/getCH7", 1, this::getCH7);
-        LazyDashboard.addNumber("RadioController/getCH8", 1, this::getCH8);
+        if (Robot.isReal()) {
+            LazyDashboard.addNumber("RadioController/getRightX", 5, this::getRightX);
+            LazyDashboard.addNumber("RadioController/getRightY", 5, this::getRightY);
+            LazyDashboard.addNumber("RadioController/getLeftY", 5, this::getLeftY);
+            LazyDashboard.addNumber("RadioController/getLeftX", 5, this::getLeftX);
+            LazyDashboard.addString("RadioController/getRightSwitch-CH5", 5, () -> this.getRightSwitch().toString());
+            LazyDashboard.addBoolean("RadioController/getRightButton-CH6", 5, this::getRightButton);
+            LazyDashboard.addString("RadioController/getLeftSwitch-CH7", 5, () -> this.getLeftSwitch().toString());
+            LazyDashboard.addNumber("RadioController/getLeftDial-CH8", 5, this::getLeftDial);
+        } else {
+            SmartDashboard.putNumber("RadioController/getRightX", 0);
+            SmartDashboard.putNumber("RadioController/getRightY", 0);
+            SmartDashboard.putNumber("RadioController/getLeftY", 0);
+            SmartDashboard.putNumber("RadioController/getLeftX", 0);
+            SmartDashboard.putString("RadioController/getRightSwitch-CH5", "0");
+            SmartDashboard.putBoolean("RadioController/getRightButton-CH6", false);
+            SmartDashboard.putString("RadioController/getLeftSwitch-CH7", "0");
+            SmartDashboard.putNumber("RadioController/getLeftDial-CH8", 0);
+        }
     }
 
     /**
@@ -168,7 +182,7 @@ public class RadioController {
      * @return if the right button is pressed
      */
     public boolean getRightButton() {
-        return getCH6() > 0;
+        return getCH6() > .1;
     }
 
     /**
@@ -199,9 +213,10 @@ public class RadioController {
     }
 
     /**
-     * @return value of the left dial
+     * @return value of the left dial [-1,1]
      */
     public double getLeftDial() {
         return getCH8();
+        // return Robot.isReal() ? getCH8() : SmartDashboard.getNumber("RadioController/getLeftDial-CH8", 0);
     }
 }

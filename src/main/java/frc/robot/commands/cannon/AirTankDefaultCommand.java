@@ -4,23 +4,32 @@
 
 package frc.robot.commands.cannon;
 
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Logger1891;
 import frc.robot.subsystems.AirTank;
-import frc.team1891.common.LazyDashboard;
 
 public class AirTankDefaultCommand extends CommandBase {
-  double desiredPressure = 60;
+  // private double desiredPressure = 60;
+  private final DoubleSupplier desiredPressureSupplier;
   private final AirTank airTank;
-  private final Double Tolerance = 5.0;
+  private final Double tolerance = 5.0;
+  
+  /**
+   * Creates a command that regulates the pressure of the AirTank, with a default desired pressure of 60
+   */
+  public AirTankDefaultCommand(AirTank airTank) {
+    this(airTank, () -> 60);
+  }
+
   /**
    * Creates a command that regulates the pressure of the AirTank
    */
-  public AirTankDefaultCommand(AirTank airTank) {
+  public AirTankDefaultCommand(AirTank airTank, DoubleSupplier desiredPressureSupplier) {
     addRequirements(airTank);
     this.airTank = airTank;
+    this.desiredPressureSupplier = desiredPressureSupplier;
     Logger1891.info("AirtankDefault command");
   }
 
@@ -31,19 +40,19 @@ public class AirTankDefaultCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    double desiredPressure = desiredPressureSupplier.getAsDouble();
     //double desiredPressure = LazyDashboard.addNumber("AirTank/Current Pressure", 60);
-    double desiredPressure = SmartDashboard.getNumber("AirTank/Desired Pressure", 40);
+    // double desiredPressure = SmartDashboard.getNumber("AirTank/Desired Pressure", 40);
     airTank.setDesiredPressure(desiredPressure);
     
-    //LazyDashboard.addNumber("AirTank", ()-> desiredPressure);
-    System.out.print("desired presure " + desiredPressure);
+    // System.out.print("desired presure " + desiredPressure);
     
     if(airTank.isOpen()){
       if(airTank.getCurrentPressure() > airTank.getDesiredPressure()){
         airTank.closeSolenoid();
       }
     }else{
-      if(airTank.getCurrentPressure() <= airTank.getDesiredPressure() - Tolerance){
+      if(airTank.getCurrentPressure() <= airTank.getDesiredPressure() - tolerance){
         airTank.openSolenoid();
       }
     }
