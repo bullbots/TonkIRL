@@ -45,26 +45,32 @@ public class RadioController {
         while (!Thread.currentThread().isInterrupted()) {
             final String read = reader.read();
             String[] values = read.split(",");
-            // values[2] shoots down to -1.3 or so when the controller turns off, so it's a janky way of checking that safety.
-            if (values.length == 1 || Integer.parseInt(values[2]) < -1.2) {
+            // Sometimes the reader doesn't receive data from the USB because they are reading and writing out of sync
+            // But if it doesn't get any data for several cycles, then something is probably wrong.
+            if (values.length == 1) {
                 disconnectedCounter++;
                 if (disconnectedCounter > 5) {
                     isConnected.set(false);
-                    SmartDashboard.putBoolean("RadioController/controller connected", false);
-                
-                    rightX.set(0);
-                    rightY.set(0);
-                    leftY.set(0);
-                    leftX.set(0);
-                    ch5.set(0);
-                    ch6.set(0);
-                    ch7.set(0);
-                    ch8.set(0);
                 }
+            // values[2] shoots down to -1.3 or so when the controller turns off, so it's a janky way of checking that safety.
+            } else if (Integer.parseInt(values[2]) < -1.2) {
+                isConnected.set(false);
             } else {
-                isConnected.set(true);
-                SmartDashboard.putBoolean("RadioController/controller connected", true);
                 disconnectedCounter = 0;
+            }
+            if (!isConnected.get()) {
+                SmartDashboard.putBoolean("RadioController/controller connected", false);
+            
+                rightX.set(0);
+                rightY.set(0);
+                leftY.set(0);
+                leftX.set(0);
+                ch5.set(0);
+                ch6.set(0);
+                ch7.set(0);
+                ch8.set(0);
+            } else {
+                SmartDashboard.putBoolean("RadioController/controller connected", true);
 
                 rightX.set(Integer.parseInt(values[0]));
                 rightY.set(Integer.parseInt(values[1]));
@@ -95,14 +101,15 @@ public class RadioController {
         serialReaderThread.start();
 
         if (Robot.isReal()) {
-            LazyDashboard.addNumber("RadioController/getRightX", 5, this::getRightX);
-            LazyDashboard.addNumber("RadioController/getRightY", 5, this::getRightY);
-            LazyDashboard.addNumber("RadioController/getLeftY", 5, this::getLeftY);
-            LazyDashboard.addNumber("RadioController/getLeftX", 5, this::getLeftX);
-            LazyDashboard.addString("RadioController/getRightSwitch-CH5", 5, () -> this.getRightSwitch().toString());
-            LazyDashboard.addBoolean("RadioController/getRightButton-CH6", 5, this::getRightButton);
-            LazyDashboard.addString("RadioController/getLeftSwitch-CH7", 5, () -> this.getLeftSwitch().toString());
-            LazyDashboard.addNumber("RadioController/getLeftDial-CH8", 5, this::getLeftDial);
+            int interval = 5; // every 5 run cycles each value will update.
+            LazyDashboard.addNumber("RadioController/getRightX", interval, this::getRightX);
+            LazyDashboard.addNumber("RadioController/getRightY", interval, this::getRightY);
+            LazyDashboard.addNumber("RadioController/getLeftY", interval, this::getLeftY);
+            LazyDashboard.addNumber("RadioController/getLeftX", interval, this::getLeftX);
+            LazyDashboard.addString("RadioController/getRightSwitch-CH5", interval, () -> this.getRightSwitch().toString());
+            LazyDashboard.addBoolean("RadioController/getRightButton-CH6", interval, this::getRightButton);
+            LazyDashboard.addString("RadioController/getLeftSwitch-CH7", interval, () -> this.getLeftSwitch().toString());
+            LazyDashboard.addNumber("RadioController/getLeftDial-CH8", interval, this::getLeftDial);
         } else {
             SmartDashboard.putNumber("RadioController/getRightX", 0);
             SmartDashboard.putNumber("RadioController/getRightY", 0);
@@ -152,14 +159,15 @@ public class RadioController {
     }
 
     /**
-     * @return raw value of CH5
+     * @return raw value of CH5 (right switch)
      */
     public double getCH5() {
         return (ch5.get() / 100.);
     }
 
     /**
-     * @return state of right three state switch
+     * @return state of right three state switch (CH5)
+     * TODO: Does this still work?
      */
     public SwitchState getRightSwitch() {
         if (Math.abs(getCH5()) < 20) {
@@ -172,28 +180,28 @@ public class RadioController {
     }
 
     /**
-     * @return raw value of CH6
+     * @return raw value of CH6 (right button)
      */
     public double getCH6() {
         return (ch6.get() / 100.);
     }
 
     /**
-     * @return if the right button is pressed
+     * @return if the right button is pressed (CH6)
      */
     public boolean getRightButton() {
         return getCH6() > .1;
     }
 
     /**
-     * @return raw value of CH7
+     * @return raw value of CH7 (left switch)
      */
     public double getCH7() {
         return (ch7.get() / 100.);
     }
     
     /**
-     * @return state of left three state switch
+     * @return state of left three state switch (CH7)
      */
     public SwitchState getLeftSwitch() {
         if (Math.abs(getCH7()) < 20) {
@@ -206,17 +214,17 @@ public class RadioController {
     }
 
     /**
-     * @return raw value of CH8
+     * @return raw value of CH8 (left dial)
      */
     public double getCH8() {
         return (ch8.get() / 100.);
     }
 
     /**
-     * @return value of the left dial [-1,1]
+     * @return value of the left dial [-1,1] (CH8)
      */
     public double getLeftDial() {
-        return getCH8();
-        // return Robot.isReal() ? getCH8() : SmartDashboard.getNumber("RadioController/getLeftDial-CH8", 0);
+        // return getCH8();
+        return Robot.isReal() ? getCH8() : SmartDashboard.getNumber("RadioController/getLeftDial-CH8", 0);
     }
 }

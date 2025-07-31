@@ -15,7 +15,7 @@ public class SerialReader {
   }
 
   public String read() {
-    return read(false);
+    return this.read(false);
   }
 
   /**

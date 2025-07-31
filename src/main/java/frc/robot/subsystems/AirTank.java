@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CannonConstants;
 import frc.robot.Logger1891;
 import frc.robot.Robot;
-import frc.robot.commands.cannon.FireBarrel;
 import frc.team1891.common.LazyDashboard;
 import frc.team1891.common.hardware.AnalogPressureSensor;
 
@@ -42,7 +41,7 @@ public class AirTank extends SubsystemBase {
     // Start with pressure of 0
     setDesiredPressure(0);
     SmartDashboard.putNumber("AirTank/Desired Pressure", 0);
-    SmartDashboard.putNumber("AirTank/Pulse Duration", FireBarrel.PULSE_DURATION);
+    SmartDashboard.putNumber("AirTank/Pulse Duration", Cannon.DEFAULT_PULSE_DURATION);
     if (Robot.isReal()) {
       LazyDashboard.addNumber("AirTank/Current Pressure", pressureSensor::getPressure);
     } else {

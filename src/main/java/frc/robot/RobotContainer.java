@@ -39,21 +39,29 @@ public class RobotContainer {
   private static final LEDs leds = LEDs.getInstance();
   private static final Lifter lifter = Lifter.getInstance();
 
-  // Inputs
-  private static final RadioController controller = new RadioController();
+  // On-robot enable button
   private static final DigitalInput spoofSwitch = new DigitalInput(0);
-  
-  // Triggers
   private static final Trigger spoofSwitchTrigger = new Trigger(() -> !spoofSwitch.get());
+  
+  // RadioController
+  private static final RadioController controller = new RadioController();
+  
+  // RadioController Triggers and ValueSuppliers
+  private static final DoubleSupplier controllerLeftY = controller::getLeftY,
+                                      controllerRightX = controller::getRightX,
+                                      controllerRightY = controller::getRightY;
+
   private static final Trigger shootTrigger = new Trigger(controller::getRightButton);
 
   private static final Trigger controllerArmed = new Trigger(() -> controller.getCH5() < -.9 && !spoofSwitch.get());
   private static final Trigger controllerDisarmed = new Trigger(() -> controller.getCH5() > .9 && !spoofSwitch.get());
-
   private static final DoubleSupplier desiredPressure = () -> (controller.getLeftDial() + 1) * AirTank.MAX_PRESSURE/2.; // Map controller dial [-1,1] to PSI [0,MAX]
+
+  // System Triggers
   private static double lastDesiredPressure = desiredPressure.getAsDouble();
   private static final Trigger desiredPressureChange = new Trigger(() -> {
     double newDesiredPressure = desiredPressure.getAsDouble();
+    // If the desired pressure differs by more than 5 PSI this will trigger.
     if (Math.abs(lastDesiredPressure - newDesiredPressure) > 5) {
       lastDesiredPressure = newDesiredPressure;
       System.out.println("Hi!");
@@ -62,19 +70,11 @@ public class RobotContainer {
     return false;
   });
 
-  private static final Trigger atDesiredPressure = new Trigger(() -> {
-    if (airTank.getCurrentPressure() > airTank.getDesiredPressure()) {
-      System.out.println("safydoi");
-      return true;
-    }
-    return airTank.getCurrentPressure() > airTank.getCurrentPressure();
-  });
+  private static final Trigger atDesiredPressure = new Trigger(() -> airTank.getCurrentPressure() > airTank.getCurrentPressure());
 
   public static DataLog log;
   public static StringLogEntry myStringLog;
   
-  private static final Command airTankCommand = new AirTankDefaultCommand(airTank, desiredPressure);
-
   public RobotContainer() {
     System.out.println("hello");
     configureBindings();
@@ -90,9 +90,11 @@ public class RobotContainer {
   }
   
   private void configureBindings() {
-    drivetrain.setDefaultCommand(new ControllerBasicDrive(drivetrain, controller::getLeftY, controller::getRightX));
+    Command airTankCommand = new AirTankDefaultCommand(airTank, desiredPressure);
+
+    drivetrain.setDefaultCommand(new ControllerBasicDrive(drivetrain, controllerLeftY, controllerRightX));
     airTank.setDefaultCommand(airTankCommand);
-    lifter.setDefaultCommand(new DefaultLifterCommand(lifter, ()-> controller.getRightY()));
+    lifter.setDefaultCommand(new DefaultLifterCommand(lifter, controllerRightY));
     leds.setDefaultCommand(new LEDsDefaultCommand(leds));
 
     controllerArmed.onTrue(new InstantCommand(()->airTank.setDefaultCommand(airTankCommand), airTank));
