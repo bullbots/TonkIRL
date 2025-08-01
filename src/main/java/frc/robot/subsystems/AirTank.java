@@ -34,6 +34,7 @@ public class AirTank extends SubsystemBase {
     };
   };
   private final Solenoid pressureRegulator = new Solenoid(PneumaticsModuleType.CTREPCM, CannonConstants.PRESSURE_REGULATOR_CHANNEL);
+  private final Solenoid whistle = new Solenoid(PneumaticsModuleType.CTREPCM, CannonConstants.WHISTLE_CHANNEL);
 
   private double desiredPressure;
 
@@ -96,9 +97,22 @@ public class AirTank extends SubsystemBase {
     pressureRegulator.set(false);
     Logger1891.info("AirTank closeSolenoid");
   }
+
+  public void openWhistle(){
+    whistle.set(true);
+    Logger1891.info("TOOOOOOOT TOOOT");
+  }
+
+  public void closeWhistle(){
+    whistle.set(false);
+  }
   //is true when the valve is open
   public boolean isOpen(){
     return pressureRegulator.get();
+  }
+
+  public boolean isWhisleOpen(){
+    return whistle.get();
   }
 
   @Override

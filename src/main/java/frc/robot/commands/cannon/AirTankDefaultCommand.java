@@ -57,6 +57,16 @@ public class AirTankDefaultCommand extends CommandBase {
       }
     }
 
+    if(airTank.isWhisleOpen()){
+      if(airTank.getCurrentPressure() < airTank.getDesiredPressure() + tolerance){
+        airTank.closeWhistle();
+      }
+    }else{
+      if(airTank.getCurrentPressure() > airTank.getDesiredPressure() + tolerance){
+        airTank.openWhistle();
+      }
+    }
+
     // if ((airTank.getCurrentPressure() < airTank.getDesiredPressure()) && (airTank.getCurrentPressure() >= -2)) {
     //   airTank.openSolenoid();
     // } else {
