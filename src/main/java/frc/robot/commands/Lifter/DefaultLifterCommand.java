@@ -30,7 +30,7 @@ public class DefaultLifterCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    lifter.setLiftPower(inputSupplier.getAsDouble());
+    lifter.setLiftPower(-inputSupplier.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.

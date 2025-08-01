@@ -51,7 +51,7 @@ public class RobotContainer {
   
   // RadioController Triggers and ValueSuppliers
   private static final DoubleSupplier controllerLeftY = controller::getLeftY,
-                                      controllerRightX = controller::getRightX,
+                                      controllerLeftX = controller::getLeftX,
                                       controllerRightY = controller::getRightY;
 
   private static final Trigger shootTrigger = new Trigger(controller::getRightButton);
@@ -90,7 +90,7 @@ public class RobotContainer {
   private void configureBindings() {
     Command airTankCommand = new AirTankDefaultCommand(airTank, desiredPressure);
 
-    drivetrain.setDefaultCommand(new ControllerBasicDrive(drivetrain, controllerLeftY, controllerRightX));
+    drivetrain.setDefaultCommand(new ControllerBasicDrive(drivetrain, controllerLeftY, controllerLeftX));
     airTank.setDefaultCommand(airTankCommand);
     lifter.setDefaultCommand(new DefaultLifterCommand(lifter, controllerRightY));
     leds.setDefaultCommand(new LEDsPresentationMode(leds));
