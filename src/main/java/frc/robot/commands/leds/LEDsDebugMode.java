@@ -4,14 +4,17 @@
 
 package frc.robot.commands.leds;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.AirTank;
 import frc.robot.subsystems.LEDs;
 import frc.team1891.common.led.LEDStripInterface;
 import frc.team1891.common.led.LEDStripPattern;
 
-public class PressureDisplay extends CommandBase {
-  private final LEDStripInterface leds;
+public class LEDsDebugMode extends CommandBase {
+  private final LEDStripInterface allLEDs, topA, topB, underA, underB;
 
   private final LEDStripPattern pressureIndicatorPattern = new LEDStripPattern() {
     private final AirTank tank = AirTank.getInstance();
@@ -30,12 +33,56 @@ public class PressureDisplay extends CommandBase {
       }
     }
   };
+
+  private final LEDStripPattern voltageIndicatorPattern = new LEDStripPattern() {
+    public void draw(LEDStripInterface leds) {
+      leds.clear();
+      
+      double maxVoltage = 14;
+      double voltage = RobotController.getBatteryVoltage();
+      if (voltage > 12) {
+        leds.setRangeRGB(0, (int) ((voltage/maxVoltage)*leds.length()), 0, 150, 0);
+      } else if (voltage < 10) {
+        leds.setRangeRGB(0, (int) ((voltage/maxVoltage)*leds.length()), 150, 0, 0);
+      } else {
+        leds.setRangeRGB(0, (int) ((voltage/maxVoltage)*leds.length()), 100, 100, 100);
+      }
+    };
+  };
+
+  private final LEDStripPattern controllerConnectionPattern = new LEDStripPattern() {
+    public void draw(LEDStripInterface leds) {
+      if (RobotContainer.radioControllerConnected()) {
+        leds.setAllRGB(0, 255, 0);
+      } else {
+        leds.flashAllRGB(.5, 255, 0, 0, 100, 0, 0);
+      }
+    };
+  };
+
+  private final LEDStripPattern enableStatusPatturn = new LEDStripPattern() {
+    public void draw(LEDStripInterface leds) {
+      if (RobotContainer.spoofSwitchEnabled()) {
+        if (DriverStation.isEnabled()) {
+          leds.setAllRGB(0, 255, 0);
+        } else {
+          leds.flashAllRGB(.5, 255, 0, 0, 100, 0, 0);
+        }
+      } else {
+        leds.setAllRGB(100, 100, 100);
+      }
+    };
+  };
   
   /** Creates a new PressureDisplay. */
-  public PressureDisplay(LEDs ledsSubsystem) {
+  public LEDsDebugMode(LEDs leds) {
     // Use addRequirements() here to declare subsystem dependencies.
-    // addRequirements(ledsSubsystem);
-    this.leds = ledsSubsystem.topSegment;
+    addRequirements(leds);
+    this.allLEDs = leds.leds;
+    this.topA = leds.topA;
+    this.underA = leds.underA;
+    this.topB = leds.topB;
+    this.underB = leds.underB;
   }
 
   // Called when the command is initially scheduled.
@@ -45,13 +92,16 @@ public class PressureDisplay extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    pressureIndicatorPattern.run(leds);
+    pressureIndicatorPattern.run(topA);
+    voltageIndicatorPattern.run(topB);
+    controllerConnectionPattern.run(underA);
+    enableStatusPatturn.run(underB);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    leds.off();
+    allLEDs.off();
   }
 
   // Returns true when the command should end.
