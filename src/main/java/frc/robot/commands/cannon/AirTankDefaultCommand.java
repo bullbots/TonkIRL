@@ -14,7 +14,7 @@ public class AirTankDefaultCommand extends CommandBase {
   // private double desiredPressure = 60;
   private final DoubleSupplier desiredPressureSupplier;
   private final AirTank airTank;
-  private final Double tolerance = 5.0;
+  private final Double tolerance = 2.0; // PSI
   
   /**
    * Creates a command that regulates the pressure of the AirTank, with a default desired pressure of 60

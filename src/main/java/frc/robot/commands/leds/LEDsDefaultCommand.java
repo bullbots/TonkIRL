@@ -39,7 +39,7 @@ public class LEDsDefaultCommand extends CommandBase {
       // top.update();
     } else if (RobotContainer.spoofSwitchEnabled()) {
       // If the robot is enabled, show all rainbow
-      underRainbow.run(underGlow);
+      underRainbow.run(all);
       return;
     } else {
       // If the robot is disabled, the top will flash the bullbot colors.

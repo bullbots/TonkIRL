@@ -45,32 +45,26 @@ public class RadioController {
         while (!Thread.currentThread().isInterrupted()) {
             final String read = reader.read();
             String[] values = read.split(",");
-            // Sometimes the reader doesn't receive data from the USB because they are reading and writing out of sync
-            // But if it doesn't get any data for several cycles, then something is probably wrong.
-            if (values.length == 1) {
+            if (values.length == 1 || Integer.parseInt(values[2]) < -120) {
                 disconnectedCounter++;
                 if (disconnectedCounter > 5) {
                     isConnected.set(false);
+                    SmartDashboard.putBoolean("RadioController/controller connected", false);
+                
+                    rightX.set(0);
+                    rightY.set(0);
+                    leftY.set(0);
+                    leftX.set(0);
+                    ch5.set(0);
+                    ch6.set(0);
+                    ch7.set(0);
+                    ch8.set(0);
                 }
-            // values[2] shoots down to -1.3 or so when the controller turns off, so it's a janky way of checking that safety.
-            } else if (Integer.parseInt(values[2]) < -1.2) {
-                isConnected.set(false);
             } else {
-                disconnectedCounter = 0;
-            }
-            if (!isConnected.get()) {
-                SmartDashboard.putBoolean("RadioController/controller connected", false);
-            
-                rightX.set(0);
-                rightY.set(0);
-                leftY.set(0);
-                leftX.set(0);
-                ch5.set(0);
-                ch6.set(0);
-                ch7.set(0);
-                ch8.set(0);
-            } else {
+                SmartDashboard.putString("RadioController/reader", read);
+                isConnected.set(true);
                 SmartDashboard.putBoolean("RadioController/controller connected", true);
+                disconnectedCounter = 0;
 
                 rightX.set(Integer.parseInt(values[0]));
                 rightY.set(Integer.parseInt(values[1]));
