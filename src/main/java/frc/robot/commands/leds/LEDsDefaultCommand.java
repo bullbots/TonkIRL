@@ -35,15 +35,15 @@ public class LEDsDefaultCommand extends CommandBase {
   public void execute() {
     if (!RobotContainer.radioControllerConnected()) {
       // If the controller is disconnected, show red
-      top.setAllRGB(100, 0, 0);
-      top.update();
+      // top.setAllRGB(100, 0, 0);
+      // top.update();
     } else if (RobotContainer.spoofSwitchEnabled()) {
       // If the robot is enabled, show all rainbow
-      underRainbow.run(all);
+      underRainbow.run(underGlow);
       return;
     } else {
       // If the robot is disabled, the top will flash the bullbot colors.
-      top.flashAllRGB(2,  18, 0, 222, 18, 222, 20);
+      // top.flashAllRGB(2,  18, 0, 222, 18, 222, 20);
     }
     underRainbow.run(underGlow);
   }

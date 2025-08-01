@@ -21,8 +21,8 @@ public class LEDs extends SubsystemBase {
 
   // TODO: I don't know how long the actual LED strip is
   public final LEDStrip leds = new LEDStrip(9, 100);
-  public final LEDStripSegment topSegment = new LEDStripSegment(leds, 0, 15);
-  public final LEDStripSegment underGlowSegment = new LEDStripSegment(leds, 15, 85);
+  public final LEDStripSegment topSegment = new LEDStripSegment(leds, 0, 22);
+  public final LEDStripSegment underGlowSegment = new LEDStripSegment(leds, 22, 88);
 
   private LEDs() {
     leds.start();

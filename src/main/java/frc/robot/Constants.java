@@ -28,6 +28,7 @@ public class Constants {
         public static final int TOP_RIGHT_CHANNEL = 3;
         public static final int BOTTOM_LEFT_CHANNEL = 2;
         public static final int BOTTOM_RIGHT_CHANNEL = 0;
+        public static final int WHISTLE_CHANNEL = 4; // Pressure release from cannon.
         public static final int PRESSURE_REGULATOR_CHANNEL = 7;
 
         public static final int PRESSURE_SENSOR_PORT = 0;
