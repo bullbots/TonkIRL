@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CannonConstants;
 import frc.robot.Logger1891;
 import frc.robot.Robot;
+import frc.robot.RobotContainer;
 import frc.team1891.common.LazyDashboard;
 import frc.team1891.common.hardware.AnalogPressureSensor;
 
@@ -107,14 +108,16 @@ public class AirTank extends SubsystemBase {
     whistle.set(false);
   }
   //is true when the valve is open
-  public boolean isOpen(){
+  public boolean isPressureRegulatorOpen(){
     return pressureRegulator.get();
   }
 
-  public boolean isWhisleOpen(){
+  public boolean isWhistleOpen(){
     return whistle.get();
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+    setDesiredPressure(RobotContainer.getDesiredPressureFromRadioController());
+  }
 }

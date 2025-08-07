@@ -17,7 +17,7 @@ import frc.team1891.illegal.driverstation.DriverStationSpoofer;
 /**
  * RadioLink T8S
  */
-public class RadioController {
+public class RadioController implements RadioControllerInterface {
     public enum SwitchState {
         LOW,
         MID,
@@ -116,107 +116,69 @@ public class RadioController {
         }
     }
 
-    /**
-     * @return if the controller is connnected
-     */
     // TODO
     public boolean isConnected() {
         return isConnected.get();
     }
 
-    /**
-     * @return x axis of left stick
-     */
     public double getLeftX() {
         return (leftX.get() / 100.);
     }
 
-    /**
-     * @return y axis of left stick
-     */
     public double getLeftY() {
         return (leftY.get() / 100.);
     }
 
-    /**
-     * @return x axis of right stick
-     */
     public double getRightX() {
         return (rightX.get() / 100.);
     }
 
-    /**
-     * @return y axis of right stick
-     */
     public double getRightY() {
         return (rightY.get() / 100.);
     }
 
-    /**
-     * @return raw value of CH5 (right switch)
-     */
     public double getCH5() {
         return (ch5.get() / 100.);
     }
 
-    /**
-     * @return state of right three state switch (CH5)
-     * TODO: Does this still work?
-     */
     public SwitchState getRightSwitch() {
-        if (Math.abs(getCH5()) < 20) {
+        double _ch5 = getCH5();
+        if (Math.abs(_ch5) < .2) {
             return SwitchState.MID;
-        } else if (getCH5() > 0) {
+        } else if (_ch5 > 0) {
             return SwitchState.HIGH;
         } else {
             return SwitchState.LOW;
         }
     }
 
-    /**
-     * @return raw value of CH6 (right button)
-     */
     public double getCH6() {
         return (ch6.get() / 100.);
     }
 
-    /**
-     * @return if the right button is pressed (CH6)
-     */
     public boolean getRightButton() {
         return getCH6() > .1;
     }
 
-    /**
-     * @return raw value of CH7 (left switch)
-     */
     public double getCH7() {
         return (ch7.get() / 100.);
     }
-    
-    /**
-     * @return state of left three state switch (CH7)
-     */
+
     public SwitchState getLeftSwitch() {
-        if (Math.abs(getCH7()) < 20) {
+        double _ch7 = getCH7();
+        if (Math.abs(_ch7) < 20) {
             return SwitchState.MID;
-        } else if (getCH7() > 0) {
+        } else if (_ch7 > 0) {
             return SwitchState.HIGH;
         } else {
             return SwitchState.LOW;
         }
     }
 
-    /**
-     * @return raw value of CH8 (left dial)
-     */
     public double getCH8() {
         return (ch8.get() / 100.);
     }
 
-    /**
-     * @return value of the left dial [-1,1] (CH8)
-     */
     public double getLeftDial() {
         // return getCH8();
         return Robot.isReal() ? getCH8() : SmartDashboard.getNumber("RadioController/getLeftDial-CH8", 0);

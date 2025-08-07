@@ -7,6 +7,7 @@ package frc.robot.commands.leds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.AirTank;
 import frc.robot.subsystems.LEDs;
@@ -15,6 +16,14 @@ import frc.team1891.common.led.LEDStripPattern;
 
 public class LEDsDebugMode extends CommandBase {
   private final LEDStripInterface allLEDs, topA, topB, underA, underB;
+
+  private final LEDStripPattern pulse = new LEDStripPattern() {
+    private int value = 200;
+    public void draw(LEDStripInterface leds) {
+      leds.setAllHSV(0, 0, value);
+      value = value <= 10 ? 200 : value - 2;
+    };
+  };
 
   private final LEDStripPattern pressureIndicatorPattern = new LEDStripPattern() {
     private final AirTank tank = AirTank.getInstance();
@@ -53,7 +62,13 @@ public class LEDsDebugMode extends CommandBase {
   private final LEDStripPattern controllerConnectionPattern = new LEDStripPattern() {
     public void draw(LEDStripInterface leds) {
       if (RobotContainer.radioControllerConnected()) {
-        leds.setAllRGB(0, 255, 0);
+        if (RobotContainer.spoofSwitchEnabled()) {
+          leds.setAllRGB(0, 255, 0);
+        } else if (RobotContainer.onControllerSwitchEnabled()) {
+          leds.flashAllRGB(.5, 0, 255, 0, 0, 100, 0);
+        } else {
+          leds.setAllRGB(0, 100, 0);
+        }
       } else {
         leds.flashAllRGB(.5, 255, 0, 0, 100, 0, 0);
       }
@@ -68,6 +83,8 @@ public class LEDsDebugMode extends CommandBase {
         } else {
           leds.flashAllRGB(.5, 255, 0, 0, 100, 0, 0);
         }
+      } else if (RobotContainer.onRobotSwitchEnabled()) {
+        pulse.draw(leds);
       } else {
         leds.setAllRGB(100, 100, 100);
       }

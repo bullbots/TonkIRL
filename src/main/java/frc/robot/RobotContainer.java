@@ -24,6 +24,8 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Lifter;
 import frc.robot.util.RadioController;
+import frc.robot.util.RadioControllerInterface;
+import frc.robot.util.SimRadioController;
 import frc.robot.util.RadioController.SwitchState;
 import frc.team1891.common.LazyDashboard;
 import frc.team1891.illegal.driverstation.DriverStationSpoofer;
@@ -42,12 +44,16 @@ public class RobotContainer {
   private static final Lifter lifter = Lifter.getInstance();
 
   // RadioController
-  private static final RadioController controller = new RadioController();
+  private static final RadioControllerInterface controller = Robot.isReal()?
+    new RadioController():
+    new SimRadioController(0);
 
   // On-robot enable button
   private static final DigitalInput spoofSwitch = new DigitalInput(0);
   // Robot will only enable when the button is pressed AND the controller left switch is HIGH.
-  private static final Trigger spoofSwitchTrigger = new Trigger(() -> !spoofSwitch.get() && controller.getLeftSwitch().equals(SwitchState.HIGH));
+  private static final Trigger onRobotEnableTrigger = new Trigger(() -> !spoofSwitch.get());
+  private static final Trigger onControllerEnableTrigger = new Trigger(() -> controller.getLeftSwitch().equals(SwitchState.HIGH));
+  private static final Trigger spoofSwitchTrigger = onControllerEnableTrigger.and(onRobotEnableTrigger);
   
   // RadioController Triggers and ValueSuppliers
   private static final DoubleSupplier controllerLeftY = controller::getLeftY,
@@ -58,16 +64,17 @@ public class RobotContainer {
 
   private static final Trigger debugLEDMode = new Trigger(() -> !controller.isConnected() || controller.getRightSwitch().equals(SwitchState.HIGH));
 
-  private static final DoubleSupplier desiredPressure = () -> (controller.getLeftDial() + 1) * AirTank.MAX_PRESSURE/2.; // Map controller dial [-1,1] to PSI [0,MAX]
+  public static final DoubleSupplier desiredPressure = () -> radioControllerConnected()?
+    ((controller.getLeftDial() + 1) * AirTank.MAX_PRESSURE/2.):
+    0; // Map controller dial [-1,1] to PSI [0,MAX] when controller is connected
 
   // System Triggers
   private static double lastDesiredPressure = desiredPressure.getAsDouble();
   private static final Trigger desiredPressureChange = new Trigger(() -> {
     double newDesiredPressure = desiredPressure.getAsDouble();
-    // If the desired pressure differs by more than 5 PSI this will trigger.
-    if (Math.abs(lastDesiredPressure - newDesiredPressure) > 5) {
+    // If the desired pressure differs by more than 3 PSI this will trigger.
+    if (Math.abs(lastDesiredPressure - newDesiredPressure) > 3) {
       lastDesiredPressure = newDesiredPressure;
-      System.out.println("Hi!");
       return true;
     }
     return false;
@@ -88,7 +95,7 @@ public class RobotContainer {
   }
   
   private void configureBindings() {
-    Command airTankCommand = new AirTankDefaultCommand(airTank, desiredPressure);
+    Command airTankCommand = new AirTankDefaultCommand(airTank);
 
     drivetrain.setDefaultCommand(new ControllerBasicDrive(drivetrain, controllerLeftY, controllerLeftX));
     airTank.setDefaultCommand(airTankCommand);
@@ -110,9 +117,17 @@ public class RobotContainer {
     //shootTrigger.onTrue(new SequentialCommandGroup(new FireBarrel(cannon, Barrel.BOTTOM_LEFT),new FireBarrel(cannon, Barrel.BOTTOM_RIGHT),new FireBarrel(cannon, Barrel.TOP_LEFT),new FireBarrel(cannon, Barrel.TOP_RIGHT)));
     shootTrigger.onTrue(new FireCycle(cannon));
 
-    Command ledPressureDisplay = new LEDsDebugMode(leds).withTimeout(5);
-    desiredPressureChange.onTrue(ledPressureDisplay);
-    atDesiredPressure.onTrue(ledPressureDisplay);
+    Command ledPressureDisplay = new LEDsDebugMode(leds).withTimeout(1);
+    desiredPressureChange.and(debugLEDMode.negate()).onTrue(ledPressureDisplay);
+    atDesiredPressure.and(debugLEDMode.negate()).onTrue(ledPressureDisplay);
+  }
+
+  public static boolean onRobotSwitchEnabled() {
+    return onRobotEnableTrigger.getAsBoolean();
+  }
+
+  public static boolean onControllerSwitchEnabled() {
+    return onControllerEnableTrigger.getAsBoolean();
   }
 
   public static boolean spoofSwitchEnabled() {
@@ -121,6 +136,10 @@ public class RobotContainer {
 
   public static boolean radioControllerConnected() {
     return controller.isConnected();
+  }
+
+  public static double getDesiredPressureFromRadioController() {
+    return desiredPressure.getAsDouble();
   }
 
   public Command getAutonomousCommand() {
