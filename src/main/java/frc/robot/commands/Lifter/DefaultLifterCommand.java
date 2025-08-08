@@ -6,11 +6,10 @@ package frc.robot.commands.lifter;
 
 import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Logger1891;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Lifter;
 
-public class DefaultLifterCommand extends CommandBase {
+public class DefaultLifterCommand extends Command {
   private final Lifter lifter;
   private final DoubleSupplier inputSupplier;
   /** Creates a new DefaultLifterCommand. */
