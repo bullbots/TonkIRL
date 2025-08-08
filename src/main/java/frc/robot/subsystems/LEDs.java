@@ -5,17 +5,10 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotContainer;
-import frc.robot.util.YamlLoader;
-import frc.team1891.common.led.LEDMatrix;
-import frc.team1891.common.led.LEDMatrixPattern;
-import frc.team1891.common.led.LEDMatrixPattern.AnimatedLEDMatrixPattern;
+import frc.robot.Logger1891;
 import frc.team1891.common.led.LEDStrip;
-import frc.team1891.common.led.LEDStripInterface;
-import frc.team1891.common.led.LEDStripPattern;
-import frc.team1891.common.led.LEDStripPatterns;
 import frc.team1891.common.led.LEDStripSegment;
-import frc.team1891.illegal.driverstation.DriverStationSpoofer;
+import frc.team1891.common.led.LEDStrip.LEDMode;
 
 public class LEDs extends SubsystemBase {
   private static LEDs instance = null;
@@ -23,65 +16,15 @@ public class LEDs extends SubsystemBase {
     if (instance == null) {
       instance = new LEDs();
     }
+    Logger1891.info("LEDs getInstance");
     return instance;
   }
 
-  private final LEDStrip leds = new LEDStrip(0, 336);
-  private final LEDStripSegment enabledStatusStrip = new LEDStripSegment(leds, 0, 2);
-  private final LEDStripSegment pressureIndicatorStrip = new LEDStripSegment(leds, 2, 10);
-  private final LEDStripSegment mainSegment = new LEDStripSegment(leds, 12, 68);
-
-  private final LEDMatrix matrix = new LEDMatrix(leds, 80, 16, 16, false);
-
-  private final LEDMatrixPattern offlinePattern = new AnimatedLEDMatrixPattern(8, YamlLoader.getVideo("first_pixels"));
-  private final LEDMatrixPattern sad = (leds) -> {
-    leds.setMatrixRGB(YamlLoader.getImage("sad-face-frown"));
-  };
-  
-  private final LEDStripPattern enabledStatusPattern = (leds) -> {
-    if (RobotContainer.spoofSwitchEnabled()) {
-      if (DriverStationSpoofer.isEnabled()) {
-        leds.setRGB(0, 150, 150, 150);
-      } else {
-        leds.setRGB(0, 150, 0, 0);
-      }
-    } else {
-      if (DriverStationSpoofer.isEnabled()) {
-        leds.setRGB(0, 150, 0, 0);
-      } else {
-        leds.setRGB(0, 0, 0, 0);
-      }
-    }
-    if (RobotContainer.radioControllerConnected()) {
-      leds.setRGB(1, 0, 150, 0);
-    } else {
-      leds.setRGB(1, 150, 0, 0);
-    }
-  };
-
-  private final LEDStripPattern pressureIndicatorPattern = new LEDStripPattern() {
-    private final AirTank tank = AirTank.getInstance();
-    public void draw(LEDStripInterface leds) {
-      leds.clear();
-
-      double currentPressure = tank.getCurrentPressure(), desiredPressure = tank.getDesiredPressure();
-      // set leds orange if too high
-      if (currentPressure > desiredPressure * 1.4) {
-        leds.setAllRGB(150, 100, 0);
-      // set leds green if the pressure is reached
-      } else if (currentPressure > desiredPressure) {
-        leds.setAllRGB(0, 150, 0);
-      // show a progress bar
-      } else {
-        for (int i = 0; i < leds.length() * (tank.getCurrentPressure() / tank.getDesiredPressure()); i++) {
-          leds.setRGB(i, 150, 150, 150);
-        }
-  
-      }
-    }
-  };
-
-  private final LEDStripPattern rainbow = LEDStripPatterns.RAINBOW();
+  public final LEDStrip leds = new LEDStrip(9, 100, LEDMode.GRB);
+  public final LEDStripSegment topA = new LEDStripSegment(leds, 0, 22);
+  public final LEDStripSegment underA = new LEDStripSegment(leds, 22, 34);
+  public final LEDStripSegment topB = new LEDStripSegment(leds, 56, 22);
+  public final LEDStripSegment underB = new LEDStripSegment(leds, 78, 22);
 
   private LEDs() {
     leds.start();
@@ -90,10 +33,9 @@ public class LEDs extends SubsystemBase {
 
   @Override
   public void periodic() {
-    pressureIndicatorPattern.run(pressureIndicatorStrip);
-    enabledStatusPattern.run(enabledStatusStrip);
-    rainbow.run(mainSegment);
 
-    sad.run(matrix);
+    //RobotContainer.logger4j.info("LEDS periodic");
+    
+    //sad.run(matrix);
   }
 }

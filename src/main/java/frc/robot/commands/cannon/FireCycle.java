@@ -4,8 +4,8 @@
 
 package frc.robot.commands.cannon;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.Logger1891;
 import frc.robot.subsystems.Cannon;
 import frc.robot.subsystems.Cannon.Barrel;
 
@@ -17,7 +17,7 @@ public class FireCycle extends InstantCommand {
     addRequirements(cannon);
     this.cannon = cannon;
     this.currentBarrel = Barrel.TOP_LEFT;
-
+    Logger1891.info("FireCycle");
     //this.cannon.setPulseDuration(FireBarrel.PULSE_DURATION);
   }
 
@@ -26,6 +26,7 @@ public class FireCycle extends InstantCommand {
   public void initialize() {
     cannon.fire(currentBarrel);
     currentBarrel = next(currentBarrel);
+    Logger1891.info("FireCycle initialize");
   }
 
   /** Returns the next barrel in the cycle. */

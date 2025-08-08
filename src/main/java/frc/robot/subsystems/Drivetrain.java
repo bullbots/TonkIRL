@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.Logger1891;
 
 public class Drivetrain extends SubsystemBase {
   private static Drivetrain instance = null;
@@ -19,6 +20,7 @@ public class Drivetrain extends SubsystemBase {
     if (instance == null) {
       instance = new Drivetrain();
     }
+    Logger1891.info("Drivetrain getInstance");
     return instance;
   }
 
@@ -65,6 +67,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void stop() {
+    Logger1891.info("Drivetrain stop");
     leftMaster.stopMotor();
     rightMaster.stopMotor();
   }

@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Logger1891;
 
 public class Lifter extends SubsystemBase{
     public static Lifter instance;
@@ -11,6 +12,7 @@ public class Lifter extends SubsystemBase{
         if(instance == null){
             instance = new Lifter();
         }
+        Logger1891.info("subsytem Lifter getInstance");
         return instance;
     }
     private final VictorSPX liftMotor;

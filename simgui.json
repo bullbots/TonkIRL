@@ -2,8 +2,7 @@
   "HALProvider": {
     "Addressable LEDs": {
       "0": {
-        "columns": 16,
-        "serpentine": true
+        "columns": 22
       },
       "window": {
         "visible": true
@@ -12,6 +11,11 @@
     "DIO": {
       "window": {
         "visible": true
+      }
+    },
+    "Timing": {
+      "window": {
+        "visible": false
       }
     }
   },
@@ -26,16 +30,10 @@
         "open": true
       },
       "SmartDashboard": {
-        "AirTank": {
-          "open": true
-        },
-        "AnalogPressureSensor": {
-          "open": true
-        },
-        "Cannon": {
-          "open": true
-        },
         "DriverStationSpoofer": {
+          "open": true
+        },
+        "RadioController": {
           "open": true
         },
         "open": true

@@ -4,28 +4,36 @@
 
 package frc.robot;
 
+
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.Lifter.DefaultLifterCommand;
 import frc.robot.commands.cannon.AirTankDefaultCommand;
-import frc.robot.commands.cannon.FireBarrel;
 import frc.robot.commands.cannon.FireCycle;
 import frc.robot.commands.drivetrain.ControllerBasicDrive;
+import frc.robot.commands.leds.LEDsPresentationMode;
+import frc.robot.commands.leds.LEDsDebugMode;
+import frc.robot.commands.lifter.DefaultLifterCommand;
 import frc.robot.subsystems.AirTank;
 import frc.robot.subsystems.Cannon;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Lifter;
-import frc.robot.subsystems.Cannon.Barrel;
 import frc.robot.util.RadioController;
-import frc.robot.util.YamlLoader;
+import frc.robot.util.RadioControllerInterface;
+import frc.robot.util.SimRadioController;
+import frc.robot.util.RadioController.SwitchState;
 import frc.team1891.common.LazyDashboard;
 import frc.team1891.illegal.driverstation.DriverStationSpoofer;
+
+import java.util.function.DoubleSupplier;
+
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.StringLogEntry;
 
 public class RobotContainer {
   // Subsystems
@@ -35,47 +43,92 @@ public class RobotContainer {
   private static final LEDs leds = LEDs.getInstance();
   private static final Lifter lifter = Lifter.getInstance();
 
-  // Inputs
-  private static final RadioController controller = new RadioController();
-  private static final DigitalInput spoofSwitch = new DigitalInput(0);
-  
-  // Triggers
-  private static final Trigger spoofSwitchTrigger = new Trigger(() -> !spoofSwitch.get());
-  private static final Trigger shootTrigger = new Trigger(() -> controller.getCH6() > 0);
+  // RadioController
+  private static final RadioControllerInterface controller = Robot.isReal()?
+    new RadioController():
+    new SimRadioController(0);
 
+  // On-robot enable button
+  private static final DigitalInput spoofSwitch = new DigitalInput(0);
+  // Robot will only enable when the button is pressed AND the controller left switch is HIGH.
+  private static final Trigger onRobotEnableTrigger = new Trigger(() -> !spoofSwitch.get());
+  private static final Trigger onControllerEnableTrigger = new Trigger(() -> controller.getLeftSwitch().equals(SwitchState.HIGH));
+  private static final Trigger spoofSwitchTrigger = onControllerEnableTrigger.and(onRobotEnableTrigger);
+  
+  // RadioController Triggers and ValueSuppliers
+  private static final DoubleSupplier controllerLeftY = controller::getLeftY,
+                                      controllerLeftX = controller::getLeftX,
+                                      controllerRightY = controller::getRightY;
+
+  private static final Trigger shootTrigger = new Trigger(controller::getRightButton);
+
+  private static final Trigger debugLEDMode = new Trigger(() -> !controller.isConnected() || controller.getRightSwitch().equals(SwitchState.HIGH));
+
+  public static final DoubleSupplier desiredPressure = () -> radioControllerConnected()?
+    ((controller.getLeftDial() + 1) * AirTank.MAX_PRESSURE/2.):
+    0; // Map controller dial [-1,1] to PSI [0,MAX] when controller is connected
+
+  // System Triggers
+  private static double lastDesiredPressure = desiredPressure.getAsDouble();
+  private static final Trigger desiredPressureChange = new Trigger(() -> {
+    double newDesiredPressure = desiredPressure.getAsDouble();
+    // If the desired pressure differs by more than 3 PSI this will trigger.
+    if (Math.abs(lastDesiredPressure - newDesiredPressure) > 5) {
+      lastDesiredPressure = newDesiredPressure;
+      return true;
+    }
+    return false;
+  });
+
+  // private static final Trigger atDesiredPressure = new Trigger(() -> airTank.getCurrentPressure() > airTank.getCurrentPressure());
+
+  public static DataLog log;
+  public static StringLogEntry myStringLog;
+  
   public RobotContainer() {
     configureBindings();
 
-    // for (int i = 1; i < 10; i++) {
-    //   DigitalInput dio = new DigitalInput(i);
-    //   LazyDashboard.addBoolean("DIO "+i, dio::get);
-    // }
+    LazyDashboard.addBoolean("DriverStationSpoofer/enableSwitch", 5, spoofSwitchTrigger::getAsBoolean);
+    LazyDashboard.addBoolean("DriverStationSpoofer/isSpoofing", 5, DriverStationSpoofer::isEnabled);
 
-
-    LazyDashboard.addBoolean("DriverStationSpoofer/enableSwitch", spoofSwitchTrigger::getAsBoolean);
-    LazyDashboard.addBoolean("DriverStationSpoofer/isSpoofing", DriverStationSpoofer::isEnabled);
-
-    // SmartDashboard.putNumber("ping", 0);
-    // LazyDashboard.addNumber("ping", () -> {
-    //   return SmartDashboard.getNumber("ping", 0) + 1;
-    // });
+    LazyDashboard.addNumber("Battery Voltage", 30, RobotController::getBatteryVoltage);
   }
-
+  
   private void configureBindings() {
-    drivetrain.setDefaultCommand(new ControllerBasicDrive(drivetrain, controller::getLeftY, controller::getRightX));
-    airTank.setDefaultCommand(new AirTankDefaultCommand(airTank));
-    lifter.setDefaultCommand(new DefaultLifterCommand(lifter, ()-> controller.getRightY()));
+    Command airTankCommand = new AirTankDefaultCommand(airTank);
 
+    drivetrain.setDefaultCommand(new ControllerBasicDrive(drivetrain, controllerLeftY, controllerLeftX));
+    airTank.setDefaultCommand(airTankCommand);
+    lifter.setDefaultCommand(new DefaultLifterCommand(lifter, controllerRightY));
+    leds.setDefaultCommand(new LEDsPresentationMode(leds));
+    // leds.setDefaultCommand(new LEDsDebugMode(leds));
+
+    debugLEDMode.whileTrue(new LEDsDebugMode(leds));
+    
     spoofSwitchTrigger.onTrue(new BetterInstantCommand(() -> {
+      Logger1891.info("spoofSwitchTrigger onTrue");
       DriverStationSpoofer.enable();
     }));
 
     spoofSwitchTrigger.onFalse(new BetterInstantCommand(() -> {
+      Logger1891.info("spoofSwitchTrigger onFalse");
       DriverStationSpoofer.disable();
     }));
     //shootTrigger.onTrue(new FireCycle(cannon));
     //shootTrigger.onTrue(new SequentialCommandGroup(new FireBarrel(cannon, Barrel.BOTTOM_LEFT),new FireBarrel(cannon, Barrel.BOTTOM_RIGHT),new FireBarrel(cannon, Barrel.TOP_LEFT),new FireBarrel(cannon, Barrel.TOP_RIGHT)));
     shootTrigger.onTrue(new FireCycle(cannon));
+
+    // Command ledPressureDisplay = new LEDsDebugMode(leds).withTimeout(1);
+    // desiredPressureChange.and(debugLEDMode.negate()).onTrue(ledPressureDisplay);
+    // atDesiredPressure.and(debugLEDMode.negate()).onTrue(ledPressureDisplay);
+  }
+
+  public static boolean onRobotSwitchEnabled() {
+    return onRobotEnableTrigger.getAsBoolean();
+  }
+
+  public static boolean onControllerSwitchEnabled() {
+    return onControllerEnableTrigger.getAsBoolean();
   }
 
   public static boolean spoofSwitchEnabled() {
@@ -84,6 +137,10 @@ public class RobotContainer {
 
   public static boolean radioControllerConnected() {
     return controller.isConnected();
+  }
+
+  public static double getDesiredPressureFromRadioController() {
+    return desiredPressure.getAsDouble();
   }
 
   public Command getAutonomousCommand() {

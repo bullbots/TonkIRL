@@ -5,15 +5,14 @@
 package frc.robot.commands.cannon;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.Logger1891;
 import frc.robot.subsystems.Cannon;
 import frc.robot.subsystems.Cannon.Barrel;
 
 public class FireBarrel extends InstantCommand {
-  public static final double PULSE_DURATION = .06;
-
   public FireBarrel(Cannon cannon, Barrel barrel) {
     super(() -> cannon.fire(barrel));
-
+    Logger1891.info("FireBarrel");
     addRequirements(cannon);
 
     //cannon.setPulseDuration(PULSE_DURATION);

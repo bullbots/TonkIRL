@@ -4,8 +4,12 @@
 
 package frc.robot.util;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SerialReader {
   private final SerialPort serialPort;
@@ -15,7 +19,7 @@ public class SerialReader {
   }
 
   public String read() {
-    return read(false);
+    return this.read(false);
   }
 
   /**
@@ -71,5 +75,24 @@ public class SerialReader {
       DriverStation.reportWarning("USB to Arduino is most likely disconnected", false);
       return "ERROR";
     }
+  }
+
+  public int[] readBytes() {
+    byte[] bytes = serialPort.read(20);
+
+    ByteBuffer buffer = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN);
+
+    short header = buffer.getShort();
+    String cheeeeese = header + " | ";
+    int[] pwmValues = new int[8];
+    for (int i = 0; i < 8; i++) {
+      pwmValues[i] = (int) buffer.getShort();
+      cheeeeese += pwmValues[i] + ", ";
+    }
+    short checksum = buffer.getShort();
+    cheeeeese += checksum + ".";
+    SmartDashboard.putString("cheeeeese", cheeeeese);
+
+    return pwmValues;
   }
 }

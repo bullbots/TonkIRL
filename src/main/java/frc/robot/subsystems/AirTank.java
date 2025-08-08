@@ -9,30 +9,46 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CannonConstants;
-import frc.robot.commands.cannon.FireBarrel;
+import frc.robot.Logger1891;
+import frc.robot.Robot;
+import frc.robot.RobotContainer;
 import frc.team1891.common.LazyDashboard;
 import frc.team1891.common.hardware.AnalogPressureSensor;
 
 public class AirTank extends SubsystemBase {
+  public static final double MAX_PRESSURE = 80;
+
   private static AirTank instance = null;
   public static AirTank getInstance() {
     if (instance == null) {
       instance = new AirTank();
     }
+    Logger1891.info("AirTank getInstance");
     return instance;
   }
 
-  private final AnalogPressureSensor pressureSensor = new AnalogPressureSensor(CannonConstants.PRESSURE_SENSOR_PORT, .5, 4.5, 0, 100);
+  private final AnalogPressureSensor pressureSensor = new AnalogPressureSensor(CannonConstants.PRESSURE_SENSOR_PORT, .5, 4.5, 0, 100) {
+    // Invert pressure just in case the sensor was installed wrong.
+    @Override
+    public double getPressure() {
+      return Math.abs(super.getPressure());
+    };
+  };
   private final Solenoid pressureRegulator = new Solenoid(PneumaticsModuleType.CTREPCM, CannonConstants.PRESSURE_REGULATOR_CHANNEL);
+  private final Solenoid whistle = new Solenoid(PneumaticsModuleType.CTREPCM, CannonConstants.WHISTLE_CHANNEL);
 
   private double desiredPressure;
 
-  private AirTank() {
+   AirTank() {
     // Start with pressure of 0
-    setDesiredPressure(50);
-    SmartDashboard.putNumber("AirTank/Desired Pressure", 40);
-    SmartDashboard.putNumber("AirTank/Pulse Duration", FireBarrel.PULSE_DURATION);
-    LazyDashboard.addNumber("AirTank/Current Pressure", pressureSensor::getPressure);
+    setDesiredPressure(0);
+    SmartDashboard.putNumber("AirTank/Desired Pressure", 0);
+    SmartDashboard.putNumber("AirTank/Pulse Duration", Cannon.DEFAULT_PULSE_DURATION);
+    if (Robot.isReal()) {
+      LazyDashboard.addNumber("AirTank/Current Pressure", pressureSensor::getPressure);
+    } else {
+      SmartDashboard.putNumber("AirTank/Current Pressure", 0);
+    }
     LazyDashboard.addNumber("AirTank/Raw Voltage of Pressure Sensor", pressureSensor::getVoltage);
     LazyDashboard.addBoolean("AirTank/Regulator Valve Open", pressureRegulator::get);
   }
@@ -41,8 +57,9 @@ public class AirTank extends SubsystemBase {
    * Sets the desired pressure in the shooting tank.
    */
   public void setDesiredPressure(double pressure) {
-    // SmartDashboard.putNumber("AirTank/Desired Pressure", pressure);
+    SmartDashboard.putNumber("AirTank/Desired Pressure", pressure);
     desiredPressure = pressure;
+    // Logger1891.info("AirTank setPressure");
   }
 
   /**
@@ -51,6 +68,7 @@ public class AirTank extends SubsystemBase {
   public double getDesiredPressure() {
     // return SmartDashboard.getNumber("AirTank/Desired Pressure", -1);
     return desiredPressure;
+    
   }
 
   // public boolean atDesiredPressure() {
@@ -62,6 +80,7 @@ public class AirTank extends SubsystemBase {
    */
   public double getCurrentPressure() {
     return pressureSensor.getPressure();
+    // return Robot.isReal() ? pressureSensor.getPressure() : SmartDashboard.getNumber("AirTank/Current Pressure", 0);
   }
 
   /**
@@ -69,6 +88,7 @@ public class AirTank extends SubsystemBase {
    */
   public void openSolenoid() {
     pressureRegulator.set(true);
+    Logger1891.info("AirTank openSolenoid");
   }
 
   /**
@@ -76,8 +96,28 @@ public class AirTank extends SubsystemBase {
    */
   public void closeSolenoid() {
     pressureRegulator.set(false);
+    Logger1891.info("AirTank closeSolenoid");
+  }
+
+  public void openWhistle(){
+    whistle.set(true);
+    Logger1891.info("TOOOOOOOT TOOOT");
+  }
+
+  public void closeWhistle(){
+    whistle.set(false);
+  }
+  //is true when the valve is open
+  public boolean isPressureRegulatorOpen(){
+    return pressureRegulator.get();
+  }
+
+  public boolean isWhistleOpen(){
+    return whistle.get();
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+    setDesiredPressure(RobotContainer.getDesiredPressureFromRadioController());
+  }
 }
