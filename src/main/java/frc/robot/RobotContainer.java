@@ -73,14 +73,14 @@ public class RobotContainer {
   private static final Trigger desiredPressureChange = new Trigger(() -> {
     double newDesiredPressure = desiredPressure.getAsDouble();
     // If the desired pressure differs by more than 3 PSI this will trigger.
-    if (Math.abs(lastDesiredPressure - newDesiredPressure) > 3) {
+    if (Math.abs(lastDesiredPressure - newDesiredPressure) > 5) {
       lastDesiredPressure = newDesiredPressure;
       return true;
     }
     return false;
   });
 
-  private static final Trigger atDesiredPressure = new Trigger(() -> airTank.getCurrentPressure() > airTank.getCurrentPressure());
+  // private static final Trigger atDesiredPressure = new Trigger(() -> airTank.getCurrentPressure() > airTank.getCurrentPressure());
 
   public static DataLog log;
   public static StringLogEntry myStringLog;
@@ -101,6 +101,7 @@ public class RobotContainer {
     airTank.setDefaultCommand(airTankCommand);
     lifter.setDefaultCommand(new DefaultLifterCommand(lifter, controllerRightY));
     leds.setDefaultCommand(new LEDsPresentationMode(leds));
+    // leds.setDefaultCommand(new LEDsDebugMode(leds));
 
     debugLEDMode.whileTrue(new LEDsDebugMode(leds));
     
@@ -117,9 +118,9 @@ public class RobotContainer {
     //shootTrigger.onTrue(new SequentialCommandGroup(new FireBarrel(cannon, Barrel.BOTTOM_LEFT),new FireBarrel(cannon, Barrel.BOTTOM_RIGHT),new FireBarrel(cannon, Barrel.TOP_LEFT),new FireBarrel(cannon, Barrel.TOP_RIGHT)));
     shootTrigger.onTrue(new FireCycle(cannon));
 
-    Command ledPressureDisplay = new LEDsDebugMode(leds).withTimeout(1);
-    desiredPressureChange.and(debugLEDMode.negate()).onTrue(ledPressureDisplay);
-    atDesiredPressure.and(debugLEDMode.negate()).onTrue(ledPressureDisplay);
+    // Command ledPressureDisplay = new LEDsDebugMode(leds).withTimeout(1);
+    // desiredPressureChange.and(debugLEDMode.negate()).onTrue(ledPressureDisplay);
+    // atDesiredPressure.and(debugLEDMode.negate()).onTrue(ledPressureDisplay);
   }
 
   public static boolean onRobotSwitchEnabled() {

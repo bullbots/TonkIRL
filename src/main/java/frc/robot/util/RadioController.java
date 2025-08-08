@@ -38,14 +38,15 @@ public class RadioController implements RadioControllerInterface {
 
     // This thread is constantly running and updating the values of the Radio Controller to 
     private final Thread serialReaderThread = new Thread(() -> {
-        final SerialPort port = new SerialPort(9600, Port.kUSB1);
+        final SerialPort port = new SerialPort(921600, Port.kUSB1);
         final SerialReader reader = new SerialReader(port);
 
         int disconnectedCounter = 0;
         while (!Thread.currentThread().isInterrupted()) {
-            final String read = reader.read();
-            String[] values = read.split(",");
-            if (values.length == 1 || Integer.parseInt(values[2]) < -120) {
+            // final String read = reader.read();
+            // String[] values = read.split(",");
+            int[] values = reader.readBytes();
+            if (values.length == 1 || values[2] < -120) {
                 disconnectedCounter++;
                 if (disconnectedCounter > 5) {
                     isConnected.set(false);
@@ -61,19 +62,19 @@ public class RadioController implements RadioControllerInterface {
                     ch8.set(0);
                 }
             } else {
-                SmartDashboard.putString("RadioController/reader", read);
+                // SmartDashboard.putString("RadioController/reader", read);
                 isConnected.set(true);
                 SmartDashboard.putBoolean("RadioController/controller connected", true);
                 disconnectedCounter = 0;
 
-                rightX.set(Integer.parseInt(values[0]));
-                rightY.set(Integer.parseInt(values[1]));
-                leftY.set(Integer.parseInt(values[2]));
-                leftX.set(Integer.parseInt(values[3]));
-                ch5.set(Integer.parseInt(values[4]));
-                ch6.set(Integer.parseInt(values[5]));
-                ch7.set(Integer.parseInt(values[6]));
-                ch8.set(Integer.parseInt(values[7]));
+                rightX.set(values[0]);
+                rightY.set(values[1]);
+                leftY.set(values[2]);
+                leftX.set(values[3]);
+                ch5.set(values[4]);
+                ch6.set(values[5]);
+                ch7.set(values[6]);
+                ch8.set(values[7]);
             }
             // sleep the thread because otherwise the while loop will run faster than the serial buffer can keep up with
             // this delay makes it more likely to read a complete message each loop and not report the controller as disconnected
@@ -166,7 +167,7 @@ public class RadioController implements RadioControllerInterface {
 
     public SwitchState getLeftSwitch() {
         double _ch7 = getCH7();
-        if (Math.abs(_ch7) < 20) {
+        if (Math.abs(_ch7) < .2) {
             return SwitchState.MID;
         } else if (_ch7 > 0) {
             return SwitchState.HIGH;

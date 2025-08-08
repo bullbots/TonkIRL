@@ -29,6 +29,7 @@ public class LEDsDebugMode extends CommandBase {
     public void draw(LEDStripInterface leds) {
       leds.clear();
 
+      leds.setAllRGB(20, 20, 20);
       double currentPressure = tank.getCurrentPressure(), desiredPressure = tank.getDesiredPressure();
       //System.out.println("current pressure "+currentPressure);
       if (currentPressure > desiredPressure * 1.4 || currentPressure > AirTank.MAX_PRESSURE) {
@@ -112,6 +113,13 @@ public class LEDsDebugMode extends CommandBase {
     voltageIndicatorPattern.run(topB);
     controllerConnectionPattern.run(underA);
     enableStatusPatturn.run(underB);
+
+
+    // topA.setRangeRGB(0, 1, 100, 0, 0);
+    // underA.setRangeRGB(0, 2, 0, 100, 0);
+    // topB.setRangeRGB(0, 3, 0, 0, 100);
+    // underB.setRangeHSV(0, 4, 0, 100, 100);
+    // allLEDs.update();
   }
 
   // Called once the command ends or is interrupted.
