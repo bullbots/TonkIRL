@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Logger1891;
 import frc.team1891.common.led.LEDStrip;
 import frc.team1891.common.led.LEDStripSegment;
+import frc.team1891.common.led.LEDStrip.LEDMode;
 
 public class LEDs extends SubsystemBase {
   private static LEDs instance = null;
@@ -19,11 +20,11 @@ public class LEDs extends SubsystemBase {
     return instance;
   }
 
-  public final LEDStrip leds = new LEDStrip(9, 88);
+  public final LEDStrip leds = new LEDStrip(9, 100, LEDMode.GRB);
   public final LEDStripSegment topA = new LEDStripSegment(leds, 0, 22);
-  public final LEDStripSegment underA = new LEDStripSegment(leds, 22, 22);
-  public final LEDStripSegment topB = new LEDStripSegment(leds, 44, 22);
-  public final LEDStripSegment underB = new LEDStripSegment(leds, 66, 22);
+  public final LEDStripSegment underA = new LEDStripSegment(leds, 22, 34);
+  public final LEDStripSegment topB = new LEDStripSegment(leds, 56, 22);
+  public final LEDStripSegment underB = new LEDStripSegment(leds, 78, 22);
 
   private LEDs() {
     leds.start();
