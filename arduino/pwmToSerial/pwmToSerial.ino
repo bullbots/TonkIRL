@@ -36,7 +36,7 @@ uint16_t calculateChecksum(int16_t* values, int count) {
 void loop() {
   // Read all PWM values with timeout to prevent hanging
   for(int i = 0; i < numPwmPins; i++){
-    unsigned long pulseWidth = pulseIn(pwmPins[i], HIGH, 25000); // 25ms timeout
+    unsigned long pulseWidth = pulseIn(pwmPins[i], HIGH, 30000); // 25ms timeout
     
     // Only map if we got a valid reading
     if(pulseWidth > 0 && pulseWidth >= 800 && pulseWidth <= 2200) {
