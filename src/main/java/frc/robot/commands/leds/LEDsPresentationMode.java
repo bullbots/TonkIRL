@@ -5,14 +5,14 @@
 package frc.robot.commands.leds;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.LEDs;
 import frc.team1891.common.led.LEDStripInterface;
 import frc.team1891.common.led.LEDStripPattern;
 import frc.team1891.common.led.LEDStripPatterns;
 
-public class LEDsPresentationMode extends CommandBase {
+public class LEDsPresentationMode extends Command {
   private final LEDStripInterface allLEDs;
 
   private final LEDStripPattern enabled = LEDStripPatterns.RAINBOW(),

@@ -4,11 +4,11 @@
 
 package frc.robot.commands.cannon;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Logger1891;
 import frc.robot.subsystems.AirTank;
 
-public class AirTankDefaultCommand extends CommandBase {
+public class AirTankDefaultCommand extends Command {
   private final AirTank airTank;
   private final Double tolerance = 2.0; // PSI
 

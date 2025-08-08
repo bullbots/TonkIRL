@@ -7,6 +7,7 @@ package frc.robot.commands.lifter;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Logger1891;
 import frc.robot.subsystems.Lifter;
 
 public class DefaultLifterCommand extends Command {
