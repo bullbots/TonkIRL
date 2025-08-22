@@ -6,11 +6,11 @@ package frc.robot.commands.cannon;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Logger1891;
+import frc.robot.Constants.CannonConstants;
 import frc.robot.subsystems.AirTank;
 
 public class AirTankDefaultCommand extends Command {
   private final AirTank airTank;
-  private final Double tolerance = 2.0; // PSI
 
   /**
    * Creates a command that regulates the pressure of the AirTank
@@ -28,22 +28,22 @@ public class AirTankDefaultCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(airTank.isPressureRegulatorOpen()){
-      if(airTank.getCurrentPressure() > airTank.getDesiredPressure()){
+    if (airTank.isPressureRegulatorOpen()) {
+      if (airTank.getCurrentPressure() > airTank.getDesiredPressure()) {
         airTank.closeSolenoid();
       }
-    }else{
-      if(airTank.getCurrentPressure() <= airTank.getDesiredPressure() - tolerance){
+    } else {
+      if (airTank.getCurrentPressure() <= airTank.getDesiredPressure() - CannonConstants.PRESSURE_TOLERANCE) {
         airTank.openSolenoid();
       }
     }
 
-    if(airTank.isWhistleOpen()){
-      if(airTank.getCurrentPressure() < airTank.getDesiredPressure() + tolerance){
+    if (airTank.isWhistleOpen()) {
+      if (airTank.getCurrentPressure() < airTank.getDesiredPressure() + CannonConstants.PRESSURE_TOLERANCE) {
         airTank.closeWhistle();
       }
-    }else{
-      if(airTank.getCurrentPressure() > airTank.getDesiredPressure() + tolerance){
+    } else {
+      if (airTank.getCurrentPressure() > airTank.getDesiredPressure() + CannonConstants.PRESSURE_TOLERANCE) {
         airTank.openWhistle();
       }
     }

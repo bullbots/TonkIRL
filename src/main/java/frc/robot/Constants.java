@@ -34,5 +34,6 @@ public class Constants {
         public static final int PRESSURE_SENSOR_PORT = 0;
 
         public static final int MAX_PRESSURE = 100;
+        public static final double PRESSURE_TOLERANCE = 2.0; // PSI
     }
 }

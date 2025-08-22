@@ -68,6 +68,19 @@ public class RobotContainer {
     ((controller.getLeftDial() + 1) * AirTank.MAX_PRESSURE/2.):
     0; // Map controller dial [-1,1] to PSI [0,MAX] when controller is connected
 
+  // System Triggers
+  
+  // private static double lastDesiredPressure = desiredPressure.getAsDouble();
+  // If the desired pressure differs by more than a certain PSI this will trigger.
+  // private static final Trigger desiredPressureChange = new Trigger(() -> {
+  //   double newDesiredPressure = desiredPressure.getAsDouble();
+  //   if (Math.abs(lastDesiredPressure - newDesiredPressure) > Constants.CannonConstants.PRESSURE_TOLERANCE) {
+  //     lastDesiredPressure = newDesiredPressure;
+  //     return true;
+  //   }
+  //   return false;
+  // });
+
   // private static final Trigger atDesiredPressure = new Trigger(() -> airTank.getCurrentPressure() > airTank.getCurrentPressure());
 
   public static DataLog log;
