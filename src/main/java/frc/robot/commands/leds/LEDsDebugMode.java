@@ -6,14 +6,14 @@ package frc.robot.commands.leds;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.AirTank;
 import frc.robot.subsystems.LEDs;
 import frc.team1891.common.led.LEDStripInterface;
 import frc.team1891.common.led.LEDStripPattern;
 
-public class LEDsDebugMode extends CommandBase {
+public class LEDsDebugMode extends Command {
   private final LEDStripInterface allLEDs, topA, topB, underA, underB;
 
   private final LEDStripPattern pulse = new LEDStripPattern() {

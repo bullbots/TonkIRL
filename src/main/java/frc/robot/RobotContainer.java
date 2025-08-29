@@ -69,16 +69,17 @@ public class RobotContainer {
     0; // Map controller dial [-1,1] to PSI [0,MAX] when controller is connected
 
   // System Triggers
-  private static double lastDesiredPressure = desiredPressure.getAsDouble();
-  private static final Trigger desiredPressureChange = new Trigger(() -> {
-    double newDesiredPressure = desiredPressure.getAsDouble();
-    // If the desired pressure differs by more than 3 PSI this will trigger.
-    if (Math.abs(lastDesiredPressure - newDesiredPressure) > 5) {
-      lastDesiredPressure = newDesiredPressure;
-      return true;
-    }
-    return false;
-  });
+  
+  // private static double lastDesiredPressure = desiredPressure.getAsDouble();
+  // If the desired pressure differs by more than a certain PSI this will trigger.
+  // private static final Trigger desiredPressureChange = new Trigger(() -> {
+  //   double newDesiredPressure = desiredPressure.getAsDouble();
+  //   if (Math.abs(lastDesiredPressure - newDesiredPressure) > Constants.CannonConstants.PRESSURE_TOLERANCE) {
+  //     lastDesiredPressure = newDesiredPressure;
+  //     return true;
+  //   }
+  //   return false;
+  // });
 
   // private static final Trigger atDesiredPressure = new Trigger(() -> airTank.getCurrentPressure() > airTank.getCurrentPressure());
 
@@ -114,13 +115,7 @@ public class RobotContainer {
       Logger1891.info("spoofSwitchTrigger onFalse");
       DriverStationSpoofer.disable();
     }));
-    //shootTrigger.onTrue(new FireCycle(cannon));
-    //shootTrigger.onTrue(new SequentialCommandGroup(new FireBarrel(cannon, Barrel.BOTTOM_LEFT),new FireBarrel(cannon, Barrel.BOTTOM_RIGHT),new FireBarrel(cannon, Barrel.TOP_LEFT),new FireBarrel(cannon, Barrel.TOP_RIGHT)));
     shootTrigger.onTrue(new FireCycle(cannon));
-
-    // Command ledPressureDisplay = new LEDsDebugMode(leds).withTimeout(1);
-    // desiredPressureChange.and(debugLEDMode.negate()).onTrue(ledPressureDisplay);
-    // atDesiredPressure.and(debugLEDMode.negate()).onTrue(ledPressureDisplay);
   }
 
   public static boolean onRobotSwitchEnabled() {

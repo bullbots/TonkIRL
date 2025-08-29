@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Logger1891;
+import frc.robot.Robot;
 import frc.team1891.common.led.LEDStrip;
 import frc.team1891.common.led.LEDStripSegment;
 import frc.team1891.common.led.LEDStrip.LEDMode;
@@ -20,7 +21,7 @@ public class LEDs extends SubsystemBase {
     return instance;
   }
 
-  public final LEDStrip leds = new LEDStrip(9, 100, LEDMode.GRB);
+  public final LEDStrip leds = new LEDStrip(9, 100, Robot.isReal() ? LEDMode.GRB : LEDMode.RGB);
   public final LEDStripSegment topA = new LEDStripSegment(leds, 0, 22);
   public final LEDStripSegment underA = new LEDStripSegment(leds, 22, 34);
   public final LEDStripSegment topB = new LEDStripSegment(leds, 56, 22);

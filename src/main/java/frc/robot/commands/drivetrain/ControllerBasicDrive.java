@@ -8,10 +8,10 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
 
-public class ControllerBasicDrive extends CommandBase {
+public class ControllerBasicDrive extends Command {
   private final Drivetrain drivetrain;
   private final DoubleSupplier xSupplier, ySupplier;
   public ControllerBasicDrive(Drivetrain drivetrain, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
