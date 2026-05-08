@@ -23,6 +23,7 @@ import frc.robot.subsystems.Cannon;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Lifter;
+import frc.robot.util.DriverStationRadioController;
 import frc.robot.util.RadioController;
 import frc.robot.util.RadioControllerInterface;
 import frc.robot.util.SimRadioController;
@@ -43,10 +44,21 @@ public class RobotContainer {
   private static final LEDs leds = LEDs.getInstance();
   private static final Lifter lifter = Lifter.getInstance();
 
+  /**
+   * When true, controls come from the FRC Driver Station (laptop NI DS or the
+   * Tonk Android Driver Station). Enable/disable is owned by the DS, so the
+   * {@link DriverStationSpoofer} is bypassed in this mode.
+   *
+   * <p>When false, we fall back to the legacy Arduino-over-USB RadioController
+   * and use the spoofer to enable.
+   */
+  private static final boolean USE_FRC_DS = true;
+
   // RadioController
-  private static final RadioControllerInterface controller = Robot.isReal()?
-    new RadioController():
-    new SimRadioController(0);
+  private static final RadioControllerInterface controller =
+      !Robot.isReal()        ? new SimRadioController(0)
+      : USE_FRC_DS           ? new DriverStationRadioController(0)
+      : /* legacy Arduino */   new RadioController();
 
   // On-robot enable button
   private static final DigitalInput spoofSwitch = new DigitalInput(0);
@@ -105,16 +117,20 @@ public class RobotContainer {
     // leds.setDefaultCommand(new LEDsDebugMode(leds));
 
     debugLEDMode.whileTrue(new LEDsDebugMode(leds));
-    
-    spoofSwitchTrigger.onTrue(new BetterInstantCommand(() -> {
-      Logger1891.info("spoofSwitchTrigger onTrue");
-      DriverStationSpoofer.enable();
-    }));
 
-    spoofSwitchTrigger.onFalse(new BetterInstantCommand(() -> {
-      Logger1891.info("spoofSwitchTrigger onFalse");
-      DriverStationSpoofer.disable();
-    }));
+    // The DS spoofer is only used in legacy Arduino mode. In FRC-DS mode, the
+    // real DS (laptop NI DS or Android driver station) owns enable/disable.
+    if (!USE_FRC_DS) {
+      spoofSwitchTrigger.onTrue(new BetterInstantCommand(() -> {
+        Logger1891.info("spoofSwitchTrigger onTrue");
+        DriverStationSpoofer.enable();
+      }));
+
+      spoofSwitchTrigger.onFalse(new BetterInstantCommand(() -> {
+        Logger1891.info("spoofSwitchTrigger onFalse");
+        DriverStationSpoofer.disable();
+      }));
+    }
     shootTrigger.onTrue(new FireCycle(cannon));
   }
 
